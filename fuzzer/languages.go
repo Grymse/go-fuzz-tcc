@@ -70,9 +70,6 @@ func tinyC3() languageRules {
 	language["<test>"] = []expression{{"<sum>", 0.5}, {"<sum><<sum>", 0.5}}
 	language["<sum>"] = []expression{{"<term>", 0.33}, {"<sum>+<term>", 0.33}, {"<sum>-<term>", 0.33}}
 	language["<term>"] = []expression{{"<ID>", 0.2}, {"<INT>", 0.7}, {"<paren_expr>", 0.1}}
-	language["<ID_AS>"] = []expression{{"a", 1}}
-	language["<ID>"] = []expression{{"a", 1}}
-	language["<INT>"] = []expression{{"1", .2}, {"2", .2}, {"3", .2}, {"4", .2}, {"5", .2}}
 
 	return language
 }
