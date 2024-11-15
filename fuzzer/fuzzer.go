@@ -17,9 +17,15 @@ type expression struct {
 
 type Variables struct {
 	variables []string
+	Generator func() string
 }
 
-func (v *Variables) add_variable() string {
+func (v *Variables) init() {
+	v.variables = make([]string, 0)
+	v.Generator = default_variable_generator
+}
+
+func default_variable_generator() string {
 	const vowels = "aeiou"
 	const consonants = "bcdfghjklmnpqrstvwxyz"
 	// Generate 10 characters
@@ -31,7 +37,12 @@ func (v *Variables) add_variable() string {
 			variable[i] = vowels[rand.Intn(len(vowels))]
 		}
 	}
-	v.variables = append(v.variables, string(variable))
+	return string(variable)
+}
+
+func (v *Variables) add_variable() string {
+	variable := v.Generator()
+	v.variables = append(v.variables, variable)
 	return string(variable)
 }
 
@@ -40,21 +51,27 @@ func (v *Variables) get_variable() string {
 }
 
 type Fuzzer struct {
-	lang        languageRules
+	Lang        languageRules
 	accumulator strings.Builder
-	variables   Variables
+	Variables   Variables
 }
 
-func Fuzz(lang languageRules) string {
-	fuzzer := Fuzzer{
-		lang:        lang,
+func New(lang languageRules) *Fuzzer {
+	return &Fuzzer{
+		Lang:        lang,
 		accumulator: strings.Builder{},
-		variables:   Variables{},
+		Variables:   Variables{},
 	}
+}
 
-	fuzzer.appendExpression(fuzzer.lang["<assign>"]) // Add variable to ensure at least one variable is present
-	fuzzer.accumulator.WriteString(" ")
-	fuzzer.appendExpression(fuzzer.lang["<program>"])
+func (fuzzer *Fuzzer) Fuzz() string {
+	fmt.Println("----------------")
+	fmt.Println("----------------")
+	fmt.Println("----------------")
+	fmt.Println("----------------")
+	fmt.Println("----------------")
+	fuzzer.appendExpressions2(fuzzer.Lang["<assign>"]) // Add variable to ensure at least one variable is present
+	fuzzer.appendExpressions2(fuzzer.Lang["<program>"])
 	return fuzzer.String()
 }
 
@@ -91,12 +108,12 @@ func (fuzzer *Fuzzer) appendExpression(expressions []expression) {
 		}
 
 		if token == "<ID_AS>" {
-			fuzzer.accumulator.WriteString(fuzzer.variables.add_variable())
+			fuzzer.accumulator.WriteString(fuzzer.Variables.add_variable())
 			continue
 		}
 
 		if token == "<ID>" {
-			fuzzer.accumulator.WriteString(fuzzer.variables.get_variable())
+			fuzzer.accumulator.WriteString(fuzzer.Variables.get_variable())
 			continue
 		}
 
@@ -106,7 +123,7 @@ func (fuzzer *Fuzzer) appendExpression(expressions []expression) {
 		}
 
 		// If the token is a non-terminal, recursively fuzz it
-		newEntry, hasEntry := fuzzer.lang[token]
+		newEntry, hasEntry := fuzzer.Lang[token]
 		if hasEntry {
 			fuzzer.appendExpression(newEntry)
 			continue
@@ -116,20 +133,50 @@ func (fuzzer *Fuzzer) appendExpression(expressions []expression) {
 	}
 }
 
-/*
- *  <program> ::= <statement>
- *  <statement> ::= "if" <paren_expr> <statement> |
- *                  "if" <paren_expr> <statement> "else" <statement> |
- *                  "while" <paren_expr> <statement> |
- *                  "do" <statement> "while" <paren_expr> ";" |
- *                  "{" { <statement> } "}" |
- *                  <expr> ";" |
- *                  ";"
- *  <paren_expr> ::= "(" <expr> ")"
- *  <expr> ::= <test> | <id> "=" <expr>
- *  <test> ::= <sum> | <sum> "<" <sum>
- *  <sum> ::= <term> | <sum> "+" <term> | <sum> "-" <term>
- *  <term> ::= <id> | <int> | <paren_expr>
- *  <id> ::= "a" | "b" | "c" | "d" | ... | "z"
- *  <int> ::= <an_unsigned_decimal_integer>
- */
+func (fuzzer *Fuzzer) appendExpressions2(expressions []expression) {
+	// Choose a rule at random
+	output := getRule(expressions).output
+
+	for {
+		nonTerminal, nonTerminalPosition := getFirstNonTerminal(output)
+
+		// get next expression array
+		nextExpressions, hasExpressions := fuzzer.Lang[nonTerminal]
+
+		if !hasExpressions {
+
+			// If '<' found, but no non-terminal rule fit. Skip to after this char to continue scan
+			if nonTerminalPosition != -1 {
+				fuzzer.accumulator.WriteString(output[:nonTerminalPosition+1])
+				output = output[nonTerminalPosition+1:]
+				continue
+			}
+
+			// If the token is a terminal, append it to the accumulator
+			fuzzer.accumulator.WriteString(output)
+			break
+		}
+
+		// Add terminal up till non-terminal
+		fuzzer.accumulator.WriteString(output[:nonTerminalPosition])
+		// Expand non-terminal
+		fuzzer.appendExpressions2(nextExpressions)
+
+		if len(output) == len(nonTerminal) {
+			break
+		}
+
+		output = output[nonTerminalPosition+len(nonTerminal):]
+	}
+}
+
+func getFirstNonTerminal(output string) (string, int) {
+	lefthand := strings.Index(output, "<")
+	righthand := strings.Index(output, ">")
+
+	if lefthand == -1 || righthand == -1 || righthand < lefthand {
+		return "", -1
+	}
+
+	return output[lefthand : righthand+1], lefthand
+}
