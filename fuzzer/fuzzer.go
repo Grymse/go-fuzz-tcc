@@ -95,6 +95,13 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	// Choose a rule at random
 	output := getRuleProbabilistic(expressions).output
 
+	/*
+		Loop repeatingly for a rule encapsulated by '<X>'.
+		If found, look first at language rules
+		Else look at special rules
+
+		Otherwise move one character forward.
+	*/
 	for {
 		next_non_terminal := strings.Index(output, "<")
 
@@ -111,30 +118,33 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 			continue
 		}
 
-		nonTerminal, hasNonTerminal := getFirstNonTerminal(output)
+		nonTerminalRule, hasNonTerminalRule := getFirstNonTerminal(output)
 
 		// If < is present, but no corresponding >, then add remaining
-		if !hasNonTerminal {
+		if !hasNonTerminalRule {
 			fuzzer.accumulator.WriteString(output)
 			break
 		}
 
-		nextExpressions, hasExpressions := fuzzer.Lang[nonTerminal]
+		// Look at lang-based rules
+		nextExpressions, hasExpressions := fuzzer.Lang[nonTerminalRule]
 
 		if hasExpressions {
 			fuzzer.appendExpressions(nextExpressions)
-			output = output[len(nonTerminal):]
+			output = output[len(nonTerminalRule):]
 			continue
 		}
 
-		specialTerminal, hasSpecialTerminal := fuzzer.getSpecialTerminal(nonTerminal)
+		// Look at special rules [INT], [ID], [ID_AS]
+		specialTerminal, hasSpecialTerminal := fuzzer.getSpecialTerminal(nonTerminalRule)
 
 		if hasSpecialTerminal {
 			fuzzer.accumulator.WriteString(specialTerminal)
-			output = output[len(nonTerminal):]
+			output = output[len(nonTerminalRule):]
 			continue
 		}
 
+		// If nothing works, move one character forward
 		fuzzer.accumulator.WriteString(output[:1])
 		output = output[1:]
 	}
