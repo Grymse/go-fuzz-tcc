@@ -37,7 +37,9 @@ grammar tinyc;
 
 /*
     http://www.iro.umontreal.ca/~felipe/IFT2030-Automne2002/Complements/tinyc.c
-*/ /*
+*/
+
+/*
  *  <program> ::= <statement>
  *  <statement> ::= "if" <paren_expr> <statement> |
  *                  "if" <paren_expr> <statement> "else" <statement> |
@@ -53,7 +55,8 @@ grammar tinyc;
  *  <term> ::= <id> | <int> | <paren_expr>
  *  <id> ::= "a" | "b" | "c" | "d" | ... | "z"
  *  <int> ::= <an_unsigned_decimal_integer>
-*/
+ */
+
 program
     : statement+ EOF
     ;
