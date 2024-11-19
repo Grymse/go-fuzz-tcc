@@ -129,20 +129,7 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 			break
 		}
 
-		// Look at lang-based rules
-		nextExpressions, hasExpressions := fuzzer.Lang[nonTerminalRule]
-
-		if hasExpressions {
-			fuzzer.appendExpressions(nextExpressions)
-			output = output[len(nonTerminalRule):]
-			continue
-		}
-
-		// Look at special rules [INT], [ID], [ID_AS]
-		specialTerminal, hasSpecialTerminal := fuzzer.getSpecialTerminal(nonTerminalRule)
-
-		if hasSpecialTerminal {
-			fuzzer.accumulator.WriteString(specialTerminal)
+		if fuzzer.processNonTerminalRule(nonTerminalRule) {
 			output = output[len(nonTerminalRule):]
 			continue
 		}
@@ -151,6 +138,35 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		fuzzer.accumulator.WriteString(output[:1])
 		output = output[1:]
 	}
+}
+
+func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
+
+	repeatRule := 1
+	if strings.Contains(nonTerminalRule, "*") {
+		nonTerminalRule = strings.Replace(nonTerminalRule, "*", "", -1)
+		repeatRule = rand.Intn(5) + 1
+	}
+
+	// Look at lang-based rules
+	nextExpressions, hasExpressions := fuzzer.Lang[nonTerminalRule]
+
+	if hasExpressions {
+		for i := 0; i < repeatRule; i++ {
+			fuzzer.appendExpressions(nextExpressions)
+		}
+		return true
+	}
+
+	// Look at special rules [INT], [ID], [ID_AS]
+	specialTerminal, hasSpecialTerminal := fuzzer.getSpecialTerminal(nonTerminalRule)
+
+	if hasSpecialTerminal {
+		fuzzer.accumulator.WriteString(specialTerminal)
+		return true
+	}
+
+	return false
 }
 
 func (fuzzer *Fuzzer) getSpecialTerminal(nonTerminal string) (string, bool) {
