@@ -47,6 +47,9 @@ func (v *Variables) add_variable() string {
 }
 
 func (v *Variables) get_variable() string {
+	if len(v.variables) == 0 {
+		return v.add_variable()
+	}
 	return v.variables[rand.Intn(len(v.variables))]
 }
 
@@ -65,7 +68,7 @@ func New(lang languageRules) *Fuzzer {
 }
 
 func (fuzzer *Fuzzer) Fuzz() string {
-	fuzzer.appendExpressions(fuzzer.Lang["<assign>"]) // Add variable to ensure at least one variable is present
+	// fuzzer.appendExpressions(fuzzer.Lang["<assign>"]) // Add variable to ensure at least one variable is present
 	fuzzer.appendExpressions(fuzzer.Lang["<program>"])
 	return fuzzer.String()
 }
