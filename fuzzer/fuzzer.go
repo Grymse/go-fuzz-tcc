@@ -69,7 +69,7 @@ func New(lang languageRules) *Fuzzer {
 
 func (fuzzer *Fuzzer) Fuzz() string {
 	// fuzzer.appendExpressions(fuzzer.Lang["<assign>"]) // Add variable to ensure at least one variable is present
-	fuzzer.appendExpressions(fuzzer.Lang["<program>"])
+	fuzzer.appendExpressions(fuzzer.Lang["<program>"], "<program>")
 	return fuzzer.String()
 }
 
@@ -94,9 +94,18 @@ func getRuleProbabilistic(expressions []expression) expression {
 	return expressions[0]
 }
 
-func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
+var depth = 0
+
+func (fuzzer *Fuzzer) appendExpressions(expressions []expression, nonTerminal string) {
 	// Choose a rule at random
 	output := getRuleProbabilistic(expressions).output
+
+	depth++
+	fmt.Println(depth * 2)
+	if 200 < depth {
+		fuzzer.accumulator.WriteString("STOP-" + nonTerminal)
+		return
+	}
 
 	/*
 		Loop repeatingly for a rule encapsulated by '<X>'.
@@ -138,6 +147,7 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		fuzzer.accumulator.WriteString(output[:1])
 		output = output[1:]
 	}
+	depth--
 }
 
 func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
@@ -153,7 +163,7 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 
 	if hasExpressions {
 		for i := 0; i < repeatRule; i++ {
-			fuzzer.appendExpressions(nextExpressions)
+			fuzzer.appendExpressions(nextExpressions, nonTerminalRule)
 		}
 		return true
 	}
