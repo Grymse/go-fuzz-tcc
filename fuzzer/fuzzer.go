@@ -1,7 +1,6 @@
 package fuzzer
 
 import (
-	"fmt"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -17,14 +16,21 @@ type expression struct {
 	cost
 }
 
+type Variable struct {
+	Scope int
+	Name  string
+}
+
 type Variables struct {
-	variables []string
+	variables []Variable
 	Generator func() string
+	scope     int
 }
 
 func (v *Variables) init() {
-	v.variables = make([]string, 0)
+	v.variables = make([]Variable, 0)
 	v.Generator = default_variable_generator
+	v.scope = 0
 }
 
 func default_variable_generator() string {
@@ -44,15 +50,33 @@ func default_variable_generator() string {
 
 func (v *Variables) add_variable() string {
 	variable := v.Generator()
-	v.variables = append(v.variables, variable)
+	v.variables = append(v.variables, Variable{
+		Scope: v.scope,
+		Name:  variable,
+	})
 	return string(variable)
 }
 
 func (v *Variables) get_variable() string {
 	if len(v.variables) == 0 {
-		return v.add_variable()
+		panic("No variables available")
 	}
-	return v.variables[rand.Intn(len(v.variables))]
+	return v.variables[rand.Intn(len(v.variables))].Name
+}
+
+func (v *Variables) increment_scope() {
+	v.scope++
+}
+
+func (v *Variables) decrement_scope() {
+	v.scope--
+	newVariables := make([]Variable, 0)
+	for _, variable := range v.variables {
+		if variable.Scope <= v.scope {
+			newVariables = append(newVariables, variable)
+		}
+	}
+	v.variables = newVariables
 }
 
 type Fuzzer struct {
@@ -91,31 +115,25 @@ func getRuleProbabilistic(expressions []expression) expression {
 		lowerBound = upperBound
 	}
 
-	// If no rule was chosen, return the first rule
-	fmt.Errorf("No rule was chosen, returning the first rule")
 	return expressions[0]
 }
 
-func shuffle(expressions []expression) []expression {
-
-	rand.Shuffle(len(expressions), func(i, j int) {
-		expressions[i], expressions[j] = expressions[j], expressions[i]
-	})
-
-	return expressions
-}
-
-func getTerminalExpressionIfExist(expressions []expression) (expression, bool) {
-
-	for _, expression := range shuffle(expressions) {
-		_, hasNonTerminal := getFirstNonTerminal(expression.output)
-
-		if !hasNonTerminal {
-			return expression, true
-		}
+func (fuzzer *Fuzzer) handleScope(output string) {
+	if len(output) == 0 {
+		return
 	}
 
-	return expression{"", 0.0, 0}, false
+	next_scope_increase := strings.Index(output, "{")
+	next_scope_decrease := strings.Index(output, "}")
+	next_non_terminal := strings.Index(output, "<")
+
+	if next_scope_increase != -1 && next_scope_increase < next_non_terminal {
+		fuzzer.Variables.increment_scope()
+	}
+
+	if next_scope_decrease != -1 && next_scope_decrease < next_non_terminal {
+		fuzzer.Variables.decrement_scope()
+	}
 }
 
 var depth = 0
@@ -147,6 +165,7 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		Otherwise move one character forward.
 	*/
 	for {
+		fuzzer.handleScope(output)
 		next_non_terminal := strings.Index(output, "<")
 
 		// There is no non terminals left
