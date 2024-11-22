@@ -69,7 +69,7 @@ func New(lang languageRules) *Fuzzer {
 
 func (fuzzer *Fuzzer) Fuzz() string {
 	// fuzzer.appendExpressions(fuzzer.Lang["<assign>"]) // Add variable to ensure at least one variable is present
-	fuzzer.appendExpressions(fuzzer.Lang["<program>"], "<program>")
+	fuzzer.appendExpressions(fuzzer.Lang["<program>"])
 	return fuzzer.String()
 }
 
@@ -94,18 +94,45 @@ func getRuleProbabilistic(expressions []expression) expression {
 	return expressions[0]
 }
 
+func shuffle(expressions []expression) []expression {
+
+	rand.Shuffle(len(expressions), func(i, j int) {
+		expressions[i], expressions[j] = expressions[j], expressions[i]
+	})
+
+	return expressions
+}
+
+func getTerminalExpressionIfExist(expressions []expression) (expression, bool) {
+
+	for _, expression := range shuffle(expressions) {
+		_, hasNonTerminal := getFirstNonTerminal(expression.output)
+
+		if !hasNonTerminal {
+			return expression, true
+		}
+	}
+
+	return expression{"", 0.0}, false
+}
+
 var depth = 0
 
-func (fuzzer *Fuzzer) appendExpressions(expressions []expression, nonTerminal string) {
+func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	// Choose a rule at random
 	output := getRuleProbabilistic(expressions).output
 
 	depth++
 	fmt.Println(depth * 2)
 	if 200 < depth {
-		fuzzer.accumulator.WriteString("STOP-" + nonTerminal)
-		return
+		expression, hasExpression := getTerminalExpressionIfExist(expressions)
+		if hasExpression {
+			output = expression.output
+		}
 	}
+
+	// Look at special rules $INT$, $ID$, $ID_AS$
+	output = fuzzer.replaceSpecialTerminals(output)
 
 	/*
 		Loop repeatingly for a rule encapsulated by '<X>'.
@@ -163,36 +190,28 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 
 	if hasExpressions {
 		for i := 0; i < repeatRule; i++ {
-			fuzzer.appendExpressions(nextExpressions, nonTerminalRule)
+			fuzzer.appendExpressions(nextExpressions)
 		}
-		return true
-	}
-
-	// Look at special rules [INT], [ID], [ID_AS]
-	specialTerminal, hasSpecialTerminal := fuzzer.getSpecialTerminal(nonTerminalRule)
-
-	if hasSpecialTerminal {
-		fuzzer.accumulator.WriteString(specialTerminal)
 		return true
 	}
 
 	return false
 }
 
-func (fuzzer *Fuzzer) getSpecialTerminal(nonTerminal string) (string, bool) {
-	if nonTerminal == "<ID_AS>" {
-		return fuzzer.Variables.add_variable(), true
+func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
+	for {
+		dollar := strings.Index(output, "$")
+
+		if dollar == -1 {
+			break
+		}
+
+		output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.add_variable(), 1)
+		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
+		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(), 1)
 	}
 
-	if nonTerminal == "<ID>" {
-		return fuzzer.Variables.get_variable(), true
-	}
-
-	if nonTerminal == "<INT>" {
-		return strconv.Itoa(rand.Intn(10000)), true
-	}
-
-	return "", false
+	return output
 }
 
 func getFirstNonTerminal(output string) (string, bool) {

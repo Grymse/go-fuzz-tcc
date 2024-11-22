@@ -24,10 +24,10 @@ func tinyC() languageRules {
 		{";", 0.1}}
 	language["<paren_expr>"] = []expression{{"(<expr>)", 1}}
 	language["<expr>"] = []expression{{"<test>", 0.5}, {"<assign>", 0.5}}
-	language["<assign>"] = []expression{{"<ID_AS>=<INT>", 1}}
+	language["<assign>"] = []expression{{"$ID_AS$=$INT$", 1}}
 	language["<test>"] = []expression{{"<sum>", 0.5}, {"<sum><<sum>", 0.5}}
 	language["<sum>"] = []expression{{"<term>", 0.33}, {"<sum>+<term>", 0.33}, {"<sum>-<term>", 0.33}}
-	language["<term>"] = []expression{{"<ID>", 0.2}, {"<INT>", 0.7}, {"<paren_expr>", 0.1}}
+	language["<term>"] = []expression{{"$ID$", 0.2}, {"$INT$", 0.7}, {"<paren_expr>", 0.1}}
 
 	return language
 }
@@ -39,7 +39,7 @@ func cln() languageRules {
 	language["<var_decl>"] = []expression{{"<type_specifier> <var_decl_list> ;", 1}}
 	language["<type_specifier>"] = []expression{{"int", 1}}
 	language["<var_decl_list>"] = []expression{{"<variable_id>", 0.5}, {"<variable_id>, <var_decl_list>", 0.5}}
-	language["<variable_id>"] = []expression{{"<ID>", 0.5}, {"<ID>=<expr>", 0.5}}
+	language["<variable_id>"] = []expression{{"$ID$", 0.5}, {"$ID$=<expr>", 0.5}}
 	language["<statement>"] = []expression{
 		{"<compound_statement>", 0.25},
 		{"<cond_statement>", 0.25},
@@ -54,7 +54,7 @@ func cln() languageRules {
 		{"while (<expr>) <statement>", 1},
 	}
 	language["<expr>"] = []expression{
-		{"<ID> = <expr>", 0.5},
+		{"$ID$ = <expr>", 0.5},
 		{"<condition>", 0.5},
 	}
 	language["<condition>"] = []expression{
@@ -93,14 +93,14 @@ func cln() languageRules {
 		{"<term> % <factor>", 0.25},
 	}
 	language["<factor>"] = []expression{
-		{"!<factor>", 0.25},
-		{"-<factor>", 0.25},
-		{"<primary>", 0.25},
+		{"!<factor>", 0.34},
+		{"-<factor>", 0.33},
+		{"<primary>", 0.33},
 	}
 	language["<primary>"] = []expression{
-		{"<INT>", 0.45},
-		{"<ID>", 0.45},
-		{"(<expr>)", 0.1},
+		{"$INT$", 0.34},
+		{"$ID$", 0.33},
+		{"(<expr>)", 0.33},
 	}
 
 	return language
