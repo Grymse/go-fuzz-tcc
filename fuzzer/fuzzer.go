@@ -9,10 +9,12 @@ import (
 
 type output = string
 type prob = float64
+type cost = int32
 
 type expression struct {
 	output
 	prob
+	cost
 }
 
 type Variables struct {
@@ -113,22 +115,25 @@ func getTerminalExpressionIfExist(expressions []expression) (expression, bool) {
 		}
 	}
 
-	return expression{"", 0.0}, false
+	return expression{"", 0.0, 0}, false
 }
 
 var depth = 0
+var maxDepth = 5000
 
 func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	// Choose a rule at random
-	output := getRuleProbabilistic(expressions).output
+	var output string
 
 	depth++
-	fmt.Println(depth * 2)
-	if 200 < depth {
-		expression, hasExpression := getTerminalExpressionIfExist(expressions)
-		if hasExpression {
-			output = expression.output
-		}
+	// fmt.Println(depth * 2)
+	if maxDepth < depth {
+		// If we reach max depth, probability decrease maxdepth with 1
+		// maxDepth = maxDepth - rand.Intn(10)/10
+		maxDepth = maxDepth - 1
+		output = selectCheapestExpression(expressions).output
+	} else {
+		output = getRuleProbabilistic(expressions).output
 	}
 
 	// Look at special rules $INT$, $ID$, $ID_AS$
@@ -177,6 +182,17 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	depth--
 }
 
+func selectCheapestExpression(expressions []expression) expression {
+
+	cheapest := expressions[0]
+	for _, expression := range expressions {
+		if expression.cost < cheapest.cost {
+			cheapest = expression
+		}
+	}
+	return cheapest
+}
+
 func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 
 	repeatRule := 1
@@ -206,7 +222,11 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 			break
 		}
 
-		output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.add_variable(), 1)
+		if strings.Contains(output, "$ID_AS$") {
+			output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.add_variable(), 1)
+			continue
+		}
+
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
 		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(), 1)
 	}
