@@ -42,17 +42,32 @@ func cln() languageRules {
 	language["<assign_id>"] = []expression{{"int $ID_AS$=$INT$", 1, 1}}
 	language["<variable_id_as>"] = []expression{{"$ID_AS$", 0.5, 1}, {"$ID_AS$=<expr>", 0.5, 11}}
 	language["<statement>"] = []expression{
-		{"<compound_statement>", 0.34, 14},
-		{"<cond_statement>", 0.33, 13},
-		{"<while_statement>", 0.33, 13},
-		{"return $ID$;", 0.25, 11},
+		{"<for_statement>", 1.20, 13},
+		{"<compound_statement>", 0.20, 14},
+		{"<cond_statement>", 0.20, 13},
+		{"<while_statement>", 0.20, 13},
+		{"return $ID$;", 0.20, 11},
 	}
 	language["<cond_statement>"] = []expression{
 		{"if (<expr>) <statement>", 0.5, 12},
 		{"if (<expr>) <statement> else <statement>", 0.5, 12},
 	}
+	language["<for_statement>"] = []expression{
+		{"^for (int $ID_AS$ = 0; <condition>; $ID$ = <expr>) <loop_statement>", 0.5, 12},
+		{"for (; <condition>; ) <loop_statement>", 0.5, 12},
+	}
+	language["<loop_statement>"] = []expression{
+		{"{\n <loop_inner_statement*> \n}", 0.6, 12},
+		{"{}", 0.15, 1},
+		{"<loop_inner_statement>", 0.25, 1},
+	}
+	language["<loop_inner_statement>"] = []expression{
+		{"<statement>", 0.33, 12},
+		{"break;", 0.33, 12},
+		{"continue;", 0.34, 12},
+	}
 	language["<while_statement>"] = []expression{
-		{"while (<expr>) <statement>", 1, 12},
+		{"while (<expr>) <loop_statement>", 1, 12},
 	}
 	language["<expr>"] = []expression{
 		{"$ID$ = <expr>", 0.5, 12},
