@@ -10,3 +10,5 @@ if gcc output.c -o output; then
 else 
     echo "Compilation failed!"
 fi
+
+../tinycc/tcc -c output.c
