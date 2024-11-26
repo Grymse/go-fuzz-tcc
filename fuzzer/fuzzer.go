@@ -86,10 +86,12 @@ type Fuzzer struct {
 }
 
 func New(lang languageRules) *Fuzzer {
+	variables := Variables{}
+	variables.init()
 	return &Fuzzer{
 		Lang:        lang,
 		accumulator: strings.Builder{},
-		Variables:   Variables{},
+		Variables:   variables,
 	}
 }
 
