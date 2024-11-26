@@ -220,7 +220,11 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 			continue
 		}
 
-		output = strings.Replace(output, "$FUNC$", fuzzer.Functions.call_function_grammar(), 1)
+		if strings.Contains(output, "$FUNC$") {
+			output = strings.Replace(output, "$FUNC$", fuzzer.Functions.call_function_grammar(), 1)
+			continue
+		}
+
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
 		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(), 1)
 	}

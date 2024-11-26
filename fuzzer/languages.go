@@ -35,11 +35,12 @@ func tinyC() languageRules {
 func cln() languageRules {
 	language := make(languageRules)
 	language["<program>"] = []expression{
-		{"<func_decl*>\n int main() {<assign_id>; <statement*> return 1;}", 1, 13}}
-	language["<func_decl>"] = []expression{
-		{"^$FUNC_DECL$ <compound_statement>", 1, 13},
+		{"<global_decl*>\n int main() {<assign_id>; <statement*>; return 1;}", 1, 13}}
+	language["<global_decl>"] = []expression{
+		{"int $ID_DECL$;", 1, 1},
+		{"int $ID_DECL$ = $INT$;", 1, 1},
+		{"^$FUNC_DECL$ <compound_statement>", 1, 1},
 	}
-	/* language["<program>"] = []expression{{"int main() {<assign_id>; <statement*> return 1;}", 1, 13}} */
 	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 0.8, 12}, {"{}", 0.2, 1}}
 	language["<var_decl>"] = []expression{{"<type_specifier> <var_decl_list> ;", 1, 3}}
 	language["<type_specifier>"] = []expression{{"int", 1, 1}}
