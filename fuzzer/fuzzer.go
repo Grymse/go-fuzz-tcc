@@ -129,17 +129,17 @@ func (fuzzer *Fuzzer) handleScope(output string) {
 	next_scope_decrease := strings.Index(output, "}")
 	next_non_terminal := strings.Index(output, "<")
 
-	if next_scope_increase != -1 && next_scope_increase < next_non_terminal {
+	if next_scope_increase != -1 && (next_scope_increase < next_non_terminal || next_non_terminal == -1) {
 		fuzzer.Variables.increment_scope()
 	}
 
-	if next_scope_decrease != -1 && next_scope_decrease < next_non_terminal {
+	if next_scope_decrease != -1 && (next_scope_decrease < next_non_terminal || next_non_terminal == -1) {
 		fuzzer.Variables.decrement_scope()
 	}
 }
 
 var depth = 0
-var maxDepth = 5000
+var maxDepth = 200
 
 func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	// Choose a rule at random
@@ -154,6 +154,13 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		output = selectCheapestExpression(expressions).output
 	} else {
 		output = getRuleProbabilistic(expressions).output
+	}
+
+	isSpecialScope := strings.HasPrefix(output, "^")
+
+	if isSpecialScope {
+		fuzzer.Variables.increment_scope()
+		output = output[1:]
 	}
 
 	// Look at special rules $INT$, $ID$, $ID_AS$
@@ -200,7 +207,11 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		fuzzer.accumulator.WriteString(output[:1])
 		output = output[1:]
 	}
+
 	depth--
+	if isSpecialScope {
+		fuzzer.Variables.decrement_scope()
+	}
 }
 
 func selectCheapestExpression(expressions []expression) expression {
@@ -219,7 +230,7 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 	repeatRule := 1
 	if strings.Contains(nonTerminalRule, "*") {
 		nonTerminalRule = strings.Replace(nonTerminalRule, "*", "", -1)
-		repeatRule = rand.Intn(5) + 1
+		repeatRule = rand.Intn(10) + 2
 	}
 
 	// Look at lang-based rules
