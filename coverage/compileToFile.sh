@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+cd ..
 go run main.go > output.c
 
 clang-format -i output.c

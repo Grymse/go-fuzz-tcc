@@ -29,7 +29,7 @@ if [[ ! -f "$output_calls_executed" ]]; then
 fi
 
 # Change to the directory with the .c files
-cd ../tinycc/ || { echo "Directory ../tinycc/ not found"; exit 1; }
+cd ../../tinycc/ || { echo "Directory ../tinycc/ not found"; exit 1; }
 
 # Process each .c file
 for file in *.c; do
