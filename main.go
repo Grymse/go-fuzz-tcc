@@ -14,6 +14,6 @@ func one_letter_generator() string {
 
 func main() {
 	go_fuzzer := fuzzer.New(fuzzer.Languages.CLN)
-	go_fuzzer.Variables.Generator = one_letter_generator
+	// go_fuzzer.Variables.Generator = one_letter_generator
 	fmt.Println(go_fuzzer.Fuzz())
 }

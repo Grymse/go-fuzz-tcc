@@ -16,82 +16,24 @@ type expression struct {
 	cost
 }
 
-type Variable struct {
-	Scope int
-	Name  string
-}
-
-type Variables struct {
-	variables []Variable
-	Generator func() string
-	scope     int
-}
-
-func (v *Variables) init() {
-	v.variables = make([]Variable, 0)
-	v.Generator = default_variable_generator
-	v.scope = 0
-}
-
-func default_variable_generator() string {
-	const vowels = "aeiou"
-	const consonants = "bcdfghjklmnpqrstvwxyz"
-	// Generate 10 characters
-	variable := make([]byte, 5)
-	for i := 0; i < 5; i++ {
-		if i%2 == 0 {
-			variable[i] = consonants[rand.Intn(len(consonants))]
-		} else {
-			variable[i] = vowels[rand.Intn(len(vowels))]
-		}
-	}
-	return string(variable)
-}
-
-func (v *Variables) add_variable() string {
-	variable := v.Generator()
-	v.variables = append(v.variables, Variable{
-		Scope: v.scope,
-		Name:  variable,
-	})
-	return string(variable)
-}
-
-func (v *Variables) get_variable() string {
-	if len(v.variables) == 0 {
-		panic("No variables available")
-	}
-	return v.variables[rand.Intn(len(v.variables))].Name
-}
-
-func (v *Variables) increment_scope() {
-	v.scope++
-}
-
-func (v *Variables) decrement_scope() {
-	v.scope--
-	newVariables := make([]Variable, 0)
-	for _, variable := range v.variables {
-		if variable.Scope <= v.scope {
-			newVariables = append(newVariables, variable)
-		}
-	}
-	v.variables = newVariables
-}
-
 type Fuzzer struct {
 	Lang        languageRules
 	accumulator strings.Builder
 	Variables   Variables
+	Functions   Functions
 }
 
 func New(lang languageRules) *Fuzzer {
 	variables := Variables{}
 	variables.init()
+	functions := Functions{}
+	functions.init()
+
 	return &Fuzzer{
 		Lang:        lang,
 		accumulator: strings.Builder{},
 		Variables:   variables,
+		Functions:   functions,
 	}
 }
 
@@ -107,7 +49,13 @@ func (fuzzer *Fuzzer) String() string {
 
 func getRuleProbabilistic(expressions []expression) expression {
 	// Choose a rule at random
-	probSum := rand.Float64()
+	sum := 0.0
+
+	for _, expression := range expressions {
+		sum += expression.prob
+	}
+
+	probSum := rand.Float64() * sum
 	lowerBound := 0.0
 	for _, expression := range expressions {
 		upperBound := lowerBound + expression.prob
@@ -120,7 +68,7 @@ func getRuleProbabilistic(expressions []expression) expression {
 	return expressions[0]
 }
 
-func (fuzzer *Fuzzer) handleScope(output string) {
+func (fuzzer *Fuzzer) adjustScope(output string) {
 	if len(output) == 0 {
 		return
 	}
@@ -163,7 +111,7 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		output = output[1:]
 	}
 
-	// Look at special rules $INT$, $ID$, $ID_AS$
+	// Look at special rules $INT$, $ID$, $ID_DECL$
 	output = fuzzer.replaceSpecialTerminals(output)
 
 	/*
@@ -174,7 +122,7 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 		Otherwise move one character forward.
 	*/
 	for {
-		fuzzer.handleScope(output)
+		fuzzer.adjustScope(output)
 		next_non_terminal := strings.Index(output, "<")
 
 		// There is no non terminals left
@@ -246,6 +194,8 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 	return false
 }
 
+var lorem = "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
 func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 	for {
 		dollar := strings.Index(output, "$")
@@ -254,11 +204,23 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 			break
 		}
 
-		if strings.Contains(output, "$ID_AS$") {
-			output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.add_variable(), 1)
+		if strings.Contains(output, "$FUNC_DECL$") {
+			output = strings.Replace(output, "$FUNC_DECL$", fuzzer.Functions.declare_function_grammar(), 1)
 			continue
 		}
 
+		if strings.Contains(output, "$ID_DECL$") {
+			output = strings.Replace(output, "$ID_DECL$", fuzzer.Variables.add_variable(), 1)
+			continue
+		}
+
+		if strings.Contains(output, "$LOREM$") {
+			substring_lorem := lorem[:rand.Intn(len(lorem)-1)]
+			output = strings.Replace(output, "$LOREM$", substring_lorem, 1)
+			continue
+		}
+
+		output = strings.Replace(output, "$FUNC$", fuzzer.Functions.call_function_grammar(), 1)
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
 		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(), 1)
 	}

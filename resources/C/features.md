@@ -18,14 +18,15 @@
 - [ ] Shifting (<<, >>)
 - [ ] Increment/Decrement (++, --)
 
+
 **Statements**
 - [X] if
 - [X] if-else
 - [X] While-loop
-- [ ] switch (minimal, with a default case)
-- [ ] Do-While
-- [ ] For loop
-- [-] break and continue
+- [X] switch (minimal, with a default case)
+- [X] Do-While
+- [X] For loop
+- [X] break and continue
 
 **Functions**
 - [-] Function Declarations
