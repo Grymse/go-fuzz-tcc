@@ -6,8 +6,26 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Path to the directory containing the CSV files
 csv_dir="/home/faur/Programming/ITU/Masters/3rd_Semester/ASA/go-fuzz-tcc/coverage"
 
-# Output file for the averages
-output_averages="$script_dir/gcov_summary_averages.csv"
+# Define the base name for the output file
+output_base="$script_dir/summary_averages/gcov_summary_averages"
+
+# Function to get the next available output file name
+get_next_output_file() {
+    local base_name="$1"
+    local suffix=1
+    local output_file="${base_name}_${suffix}.csv"
+    
+    # Loop to find the next available file name
+    while [[ -f "$output_file" ]]; do
+        suffix=$((suffix + 1))
+        output_file="${base_name}_${suffix}.csv"
+    done
+    
+    echo "$output_file"
+}
+
+# Get the next available output file
+output_averages=$(get_next_output_file "$output_base")
 
 # Initialize the output file with headers
 echo "Filename,Average Lines Executed %,Average Branches Executed %,Average Calls Executed %" > "$output_averages"
