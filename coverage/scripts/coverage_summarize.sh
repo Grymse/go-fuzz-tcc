@@ -4,10 +4,10 @@
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Path to the directory containing the CSV files
-csv_dir="/home/faur/Programming/ITU/Masters/3rd_Semester/ASA/go-fuzz-tcc/coverage"
+csv_dir="$script_dir/../csv_files/"
 
 # Define the base name for the output file
-output_base="$script_dir/summary_averages/gcov_summary_averages"
+output_base="$script_dir/../summary_averages/fuzzer_metrics_averages"
 
 # Function to get the next available output file name
 get_next_output_file() {

@@ -1,7 +1,8 @@
 #!/bin/bash
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-cd ..
+cd $script_dir/../..
 go run main.go > output.c
 
 clang-format -i output.c

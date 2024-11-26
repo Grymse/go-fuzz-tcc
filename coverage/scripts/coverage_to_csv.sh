@@ -3,10 +3,12 @@
 # Directory of the script
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+echo "Current directory: $(pwd)"
+
 # Output files for each metric
-output_lines_executed="$script_dir/gcov_summary_lines_executed.csv"
-output_branches_executed="$script_dir/gcov_summary_branches_executed.csv"
-output_calls_executed="$script_dir/gcov_summary_calls_executed.csv"
+output_lines_executed="$script_dir/../csv_files/gcov_summary_lines_executed.csv"
+output_branches_executed="$script_dir/../csv_files/gcov_summary_branches_executed.csv"
+output_calls_executed="$script_dir/../csv_files/gcov_summary_calls_executed.csv"
 
 # Check for --reset flag
 if [[ "$1" == "--reset" ]]; then
@@ -28,10 +30,8 @@ if [[ ! -f "$output_calls_executed" ]]; then
     echo "Filename,Calls Executed %" > "$output_calls_executed"
 fi
 
-# Change to the directory with the .c files
-cd ../../tinycc/ || { echo "Directory ../tinycc/ not found"; exit 1; }
+cd ../../../tinycc/ || { echo "Directory ../../..tinycc/ not found"; exit 1; }
 
-# Process each .c file
 for file in *.c; do
     if [[ -f "$file" ]]; then
         # Check if both .gcno and .gcda files exist
