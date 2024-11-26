@@ -13,7 +13,7 @@ func one_letter_generator() string {
 }
 
 func main() {
-	fuzzer := fuzzer.New(fuzzer.Languages.CLN)
-	fuzzer.Variables.Generator = one_letter_generator
+	fuzz := fuzzer.New(fuzzer.Languages.CLN)
+	fuzz.Variables.Generator = one_letter_generator
 	fmt.Println(fuzzer.Fuzz())
 }
