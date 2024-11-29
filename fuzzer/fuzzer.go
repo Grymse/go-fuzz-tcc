@@ -246,6 +246,9 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
 		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(ANY), 1)
 		output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.get_variable(VAR), 1)
+
+		chars := "abcdefghijklmnopqrstuvwxyz"
+		output = strings.Replace(output, "$CHAR$", "'"+string(chars[rand.Intn(len(chars))])+"'", 1)
 	}
 
 	return output

@@ -44,11 +44,11 @@ func (fs *Functions) declare_function_grammar() string {
 	fs.functions = append(fs.functions, f)
 
 	acc := strings.Builder{}
-	acc.WriteString("int " + f.Name + "(")
+	acc.WriteString("<type_specifier> " + f.Name + "(")
 
 	for i := 0; i < f.Variables; i++ {
 
-		acc.WriteString("int $ID_DECL$")
+		acc.WriteString("<type_specifier> $ID_DECL$")
 		if i < f.Variables-1 {
 			acc.WriteString(", ")
 		}

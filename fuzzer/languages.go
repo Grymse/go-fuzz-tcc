@@ -42,10 +42,22 @@ func cln() languageRules {
 	}
 	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 0.8, 12}, {"{}", 0.2, 1}}
 	language["<var_decl>"] = []expression{{"<type_specifier> <var_decl_list> ;", 1, 3}}
-	language["<type_specifier>"] = []expression{{"int", 1, 1}}
+	language["<type_specifier>"] = []expression{
+		{"int", 1, 1},
+		{"signed int", 1, 1},
+		{"unsigned int", 1, 1},
+		{"short", 1, 1},
+		{"signed short", 1, 1},
+		{"unsigned short", 1, 1},
+		{"long", 1, 1},
+		{"signed long", 1, 1},
+		{"unsigned long", 1, 1},
+		{"float", 1, 1},
+		{"double", 1, 1},
+		{"char", 1, 1}}
 	language["<var_decl_list>"] = []expression{{"<variable_id_as>", 0.5, 2}, {"<variable_id_as>, <var_decl_list>", 0.5, 3}}
 	language["<variable_id_as>"] = []expression{{"$ID_DECL$", 0.5, 1}, {"$ID_DECL$=<expr>", 0.5, 11}}
-	language["<variable_decl_as>"] = []expression{{"int $ID_DECL$=$INT$;", 1, 1}, {"int $ID_DECL$;", 1, 1}, {"const int $ID_DECL_C$=$INT$;", 1, 1}}
+	language["<variable_decl_as>"] = []expression{{"<type_specifier> $ID_DECL$=<value>;", 1, 1}, {"<type_specifier> $ID_DECL$;", 1, 1}, {"const <type_specifier> $ID_DECL_C$=<value>;", 1, 1}}
 	language["<statement>"] = []expression{
 		{"<switch_statement>", 1, 13},
 		{"<do_while_statement>", 1, 13},
@@ -67,8 +79,8 @@ func cln() languageRules {
 		{"switch (<expr>) {<case_statement*> \n default:\n <statement>}", 1, 12},
 	}
 	language["<case_statement>"] = []expression{
-		{"\ncase $INT$:\n <statement> \nbreak;", 1, 12},
-		{"\ncase $INT$:\n <statement>", 1, 12},
+		{"\ncase <value>:\n <statement> \nbreak;", 1, 12},
+		{"\ncase <value>:\n <statement>", 1, 12},
 	}
 	language["<do_while_statement>"] = []expression{
 		{"do <loop_statement> while (<expr>);", 1, 12},
@@ -115,7 +127,6 @@ func cln() languageRules {
 		{"<relation> == <relation>", 1, 6},
 		{"<relation> != <relation>", 1, 6},
 	}
-
 	language["<relation>"] = []expression{
 		{"<sum>", 1, 5},
 		{"<sum> <= <sum>", 1, 5},
@@ -132,18 +143,23 @@ func cln() languageRules {
 		{"<factor>", 1, 3},
 		{"<term> * <factor>", 1, 4},
 		{"<term> / <factor>", 1, 4},
-		{"<term> % <factor>", 1, 4},
+		/* {"<term> % <factor>", 1, 4}, */
 	}
 	language["<factor>"] = []expression{
 		{"! <factor>", 0.34, 3},
 		{"- <factor>", 0.33, 3},
 		{"<primary>", 0.33, 2},
 	}
-	language["<primary>"] = []expression{
+	language["<value>"] = []expression{
 		{"$INT$", 1, 1},
+		{"$INT$.$INT$f", 1, 1},
+		{"$CHAR$", 1, 1},
+	}
+	language["<primary>"] = []expression{
+		{"<value>", 1, 1},
+		{"<value><multiline_comment>", 1, 1},
 		{"$ID$", 1, 1},
-		{"$ID$<multiline_comment>", 1, 1},
-		{"$INT$<multiline_comment>", 1, 1},
+		{"$ID$<multiline_comment>", 1, 2},
 		{"$FUNC$<multiline_comment>", 1, 2},
 		{"$FUNC$", 1, 2},
 		{"(<expr>)", 1, 11},

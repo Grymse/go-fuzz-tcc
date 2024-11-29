@@ -53,3 +53,5 @@
 **TODO**
 - Add shadowing variables
 - Add types
+- int * pa = &a;
+- 
