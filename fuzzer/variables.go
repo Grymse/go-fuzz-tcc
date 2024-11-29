@@ -5,6 +5,7 @@ import "math/rand"
 type Variable struct {
 	Scope int
 	Name  string
+	Type  Type
 }
 
 type Variables struct {
@@ -12,6 +13,14 @@ type Variables struct {
 	Generator func() string
 	scope     int
 }
+
+type Type int
+
+const (
+	ANY = iota
+	VAR
+	CONST
+)
 
 func (v *Variables) init() {
 	v.variables = make([]Variable, 0)
@@ -43,7 +52,7 @@ func (v *Variables) variable_exists(name string) bool {
 	return false
 }
 
-func (v *Variables) add_variable() string {
+func (v *Variables) add_variable(varType Type) string {
 	name := v.Generator()
 
 	for v.variable_exists(name) {
@@ -53,15 +62,45 @@ func (v *Variables) add_variable() string {
 	v.variables = append(v.variables, Variable{
 		Scope: v.scope,
 		Name:  name,
+		Type:  varType,
 	})
 	return string(name)
 }
 
-func (v *Variables) get_variable() string {
+func (v *Variables) get_variable(varType Type) string {
 	if len(v.variables) == 0 {
 		panic("No variables available")
 	}
-	return v.variables[rand.Intn(len(v.variables))].Name
+
+	if varType == ANY {
+		return v.variables[rand.Intn(len(v.variables))].Name
+	}
+
+	if !v.has_type(varType) {
+		panic("No variables of type " + string(varType) + " available")
+	}
+
+	var variable = v.variables[rand.Intn(len(v.variables))]
+
+	for variable.Type != varType {
+		variable = v.variables[rand.Intn(len(v.variables))]
+	}
+
+	return variable.Name
+}
+
+func (v *Variables) get_types() (m map[Type]bool) {
+	m = make(map[Type]bool)
+
+	for _, variable := range v.variables {
+		m[variable.Type] = true
+	}
+
+	return
+}
+
+func (v *Variables) has_type(t Type) bool {
+	return v.get_types()[t]
 }
 
 func (v *Variables) increment_scope() {

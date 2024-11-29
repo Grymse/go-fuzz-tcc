@@ -174,6 +174,19 @@ func selectCheapestExpression(expressions []expression) expression {
 }
 
 func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
+	if strings.Contains(nonTerminalRule, "!") {
+		nonTerminalRule = strings.Replace(nonTerminalRule, "!", "", -1)
+		nextExpressions, hasExpressions := fuzzer.Lang[nonTerminalRule]
+
+		if hasExpressions {
+			for _, expr := range nextExpressions {
+				fuzzer.appendExpressions([]expression{expr})
+			}
+			return true
+		}
+
+		return false
+	}
 
 	repeatRule := 1
 	if strings.Contains(nonTerminalRule, "*") {
@@ -210,7 +223,12 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 		}
 
 		if strings.Contains(output, "$ID_DECL$") {
-			output = strings.Replace(output, "$ID_DECL$", fuzzer.Variables.add_variable(), 1)
+			output = strings.Replace(output, "$ID_DECL$", fuzzer.Variables.add_variable(VAR), 1)
+			continue
+		}
+
+		if strings.Contains(output, "$ID_DECL_C$") {
+			output = strings.Replace(output, "$ID_DECL_C$", fuzzer.Variables.add_variable(CONST), 1)
 			continue
 		}
 
@@ -226,7 +244,8 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 		}
 
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
-		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(), 1)
+		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(ANY), 1)
+		output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.get_variable(VAR), 1)
 	}
 
 	return output

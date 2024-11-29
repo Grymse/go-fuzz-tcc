@@ -1,14 +1,19 @@
 **Values:**
 - [X] Ints (signed and unsigned)
+  - [ ] Unsigned 16-64
+  - [ ] Signed 16-64
 - [-] Strings (with basic operations like concatenation and length checks)
 - [-] Chars (useful for lightweight string fuzzing)
 - [-] Floats (basic arithmetic, though fuzzing them adds complexity)
+  - [ ] Float
+  - [ ] Double
+- [ ] Boolean
 
 **Variables:**
 - [X] Local Variables
 - [X] Scoped Shadowing (e.g., re-declaring a variable in a narrower scope)
-- [-] Global Variables
-- [-] Constants (const keyword)
+- [X] Global Variables
+- [X] Constants (const keyword)
 
 **Expressions:**
 - [X] Comparison (==, !=, <=, >=, <, >)
@@ -17,7 +22,6 @@
 - [ ] Bitwise (&, |, ^, ~)
 - [ ] Shifting (<<, >>)
 - [ ] Increment/Decrement (++, --)
-
 
 **Statements**
 - [X] if
@@ -29,9 +33,9 @@
 - [X] break and continue
 
 **Functions**
-- [-] Function Declarations
-- [-] Function Calls
-- [-] Recursive Functions (optional for added complexity)
+- [X] Function Declarations
+- [X] Function Calls
+- [X] Recursive Functions (optional for added complexity)
 
 **Memory and Pointers**
 - [-] Pointers (basic dereferencing, * and &)
@@ -42,3 +46,10 @@
 **I/O**
 - [-] Basic printf for debugging output
 - [-] File I/O (optional, e.g., reading/writing small files)
+
+
+
+
+**TODO**
+- Add shadowing variables
+- Add types

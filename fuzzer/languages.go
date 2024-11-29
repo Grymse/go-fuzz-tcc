@@ -35,18 +35,17 @@ func tinyC() languageRules {
 func cln() languageRules {
 	language := make(languageRules)
 	language["<program>"] = []expression{
-		{"<global_decl*>\n int main() {<assign_id>; <statement*>; return 1;}", 1, 13}}
+		{"<global_decl!>\n int main() {<variable_decl_as>; <statement*>; return 1;}", 1, 13}}
 	language["<global_decl>"] = []expression{
-		{"int $ID_DECL$;", 1, 1},
-		{"int $ID_DECL$ = $INT$;", 1, 1},
+		{"<variable_decl_as!>", 1, 1},
 		{"^$FUNC_DECL$ <compound_statement>", 1, 1},
 	}
 	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 0.8, 12}, {"{}", 0.2, 1}}
 	language["<var_decl>"] = []expression{{"<type_specifier> <var_decl_list> ;", 1, 3}}
 	language["<type_specifier>"] = []expression{{"int", 1, 1}}
 	language["<var_decl_list>"] = []expression{{"<variable_id_as>", 0.5, 2}, {"<variable_id_as>, <var_decl_list>", 0.5, 3}}
-	language["<assign_id>"] = []expression{{"int $ID_DECL$=$INT$", 1, 1}}
 	language["<variable_id_as>"] = []expression{{"$ID_DECL$", 0.5, 1}, {"$ID_DECL$=<expr>", 0.5, 11}}
+	language["<variable_decl_as>"] = []expression{{"int $ID_DECL$=$INT$;", 1, 1}, {"int $ID_DECL$;", 1, 1}, {"const int $ID_DECL_C$=$INT$;", 1, 1}}
 	language["<statement>"] = []expression{
 		{"<switch_statement>", 1, 13},
 		{"<do_while_statement>", 1, 13},
@@ -96,7 +95,7 @@ func cln() languageRules {
 		{"if (<expr>) <statement> else <statement>", 1, 12},
 	}
 	language["<expr>"] = []expression{
-		{"$ID$ = <expr>", 1, 12},
+		{"$ID_AS$ = <expr>", 1, 12},
 		{"<condition>", 1, 10},
 	}
 	language["<condition>"] = []expression{
@@ -116,6 +115,7 @@ func cln() languageRules {
 		{"<relation> == <relation>", 1, 6},
 		{"<relation> != <relation>", 1, 6},
 	}
+
 	language["<relation>"] = []expression{
 		{"<sum>", 1, 5},
 		{"<sum> <= <sum>", 1, 5},
