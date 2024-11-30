@@ -25,6 +25,9 @@ int main() {
     signed short ss = 0;
     signed char sc = 'a';
     char str[] = "Hello, World!";
+    int skrt[] = 1;
+    int p = skrt;
+    
 
     if (pa == a) {
         a = 1;

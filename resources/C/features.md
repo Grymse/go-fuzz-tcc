@@ -1,13 +1,13 @@
 **Values:**
 - [X] Ints (signed and unsigned)
-  - [ ] Unsigned 16-64
-  - [ ] Signed 16-64
+  - [X] Unsigned 16-64
+  - [X] Signed 16-64
 - [-] Strings (with basic operations like concatenation and length checks)
-- [-] Chars (useful for lightweight string fuzzing)
-- [-] Floats (basic arithmetic, though fuzzing them adds complexity)
-  - [ ] Float
-  - [ ] Double
-- [ ] Boolean
+- [X] Chars (useful for lightweight string fuzzing)
+- [X] Floats (basic arithmetic, though fuzzing them adds complexity)
+  - [X] Float
+  - [X] Double
+- [X] Boolean
 
 **Variables:**
 - [X] Local Variables
@@ -52,6 +52,5 @@
 
 **TODO**
 - Add shadowing variables
-- Add types
-- int * pa = &a;
-- 
+- Add arrays
+- Add pointers
