@@ -1,11 +1,15 @@
 package fuzzer
 
-import "math/rand"
+import (
+	"math/rand"
+	"strconv"
+)
 
 type Variable struct {
-	Scope int
-	Name  string
-	Type  Type
+	Scope    int
+	Name     string
+	TypeRule TypeRule
+	IsArray  bool
 }
 
 type Variables struct {
@@ -14,7 +18,7 @@ type Variables struct {
 	scope     int
 }
 
-type Type int
+type TypeRule int
 
 const (
 	ANY = iota
@@ -52,7 +56,7 @@ func (v *Variables) variable_exists(name string) bool {
 	return false
 }
 
-func (v *Variables) add_variable(varType Type) string {
+func (v *Variables) add_variable(varTypeRule TypeRule, isArray bool) string {
 	name := v.Generator()
 
 	for v.variable_exists(name) {
@@ -60,46 +64,57 @@ func (v *Variables) add_variable(varType Type) string {
 	}
 
 	v.variables = append(v.variables, Variable{
-		Scope: v.scope,
-		Name:  name,
-		Type:  varType,
+		Scope:    v.scope,
+		Name:     name,
+		TypeRule: varTypeRule,
+		IsArray:  isArray,
 	})
 	return string(name)
 }
 
-func (v *Variables) get_variable(varType Type) string {
+func (v *Variables) get_variable(varTypeRule TypeRule) string {
 	if len(v.variables) == 0 {
 		panic("No variables available")
 	}
 
-	if varType == ANY {
-		return v.variables[rand.Intn(len(v.variables))].Name
+	if varTypeRule == ANY {
+		variable := v.variables[rand.Intn(len(v.variables))]
+
+		if variable.IsArray {
+			return variable.Name + "[" + strconv.Itoa(rand.Intn(100)) + "]"
+		}
+
+		return variable.Name
 	}
 
-	if !v.has_type(varType) {
-		panic("No variables of type " + string(varType) + " available")
+	if !v.has_type(varTypeRule) {
+		panic("No variables of type " + strconv.Itoa(int(varTypeRule)) + " available")
 	}
 
-	var variable = v.variables[rand.Intn(len(v.variables))]
+	variable := v.variables[rand.Intn(len(v.variables))]
 
-	for variable.Type != varType {
+	for variable.TypeRule != varTypeRule {
 		variable = v.variables[rand.Intn(len(v.variables))]
+	}
+
+	if variable.IsArray {
+		return variable.Name + "[" + strconv.Itoa(rand.Intn(100)) + "]"
 	}
 
 	return variable.Name
 }
 
-func (v *Variables) get_types() (m map[Type]bool) {
-	m = make(map[Type]bool)
+func (v *Variables) get_types() (m map[TypeRule]bool) {
+	m = make(map[TypeRule]bool)
 
 	for _, variable := range v.variables {
-		m[variable.Type] = true
+		m[variable.TypeRule] = true
 	}
 
 	return
 }
 
-func (v *Variables) has_type(t Type) bool {
+func (v *Variables) has_type(t TypeRule) bool {
 	return v.get_types()[t]
 }
 

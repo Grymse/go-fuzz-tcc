@@ -63,18 +63,26 @@ func cln() languageRules {
 		{"<number_types> $ID_DECL_ARR$<arr_decl_array>", 1, 1}}
 	language["<arr_decl_array>"] = []expression{
 		{"[$INT$]", 1, 1},
-		{"[$INT$]={<comma_separated_value>}", 3, 1},
+		{"[$INT$]={<comma_separated_primary>}", 3, 1},
 		{"[$INT$]={}", 1, 1},
 		{"[]", 1, 1},
-		{"[]={<comma_separated_value>}", 3, 1},
+		{"[]={<comma_separated_primary>}", 3, 1},
 		{"[]={}", 1, 1},
+	}
+	language["<arr_decl_array_c>"] = []expression{
+		{"[$INT$]={<comma_separated_value>}", 3, 1},
+		{"[]={<comma_separated_value>}", 3, 1},
 	}
 	language["<string_decl>"] = []expression{
 		{"const char $ID_DECL_ARR_C$[] = \"$LOREM$\"", 1, 1},
 		{"char $ID_DECL_ARR$[] = \"$LOREM$\"", 1, 1},
 	}
+	language["<comma_separated_primary>"] = []expression{
+		{"<primary>,<comma_separated_primary>", 10, 1},
+		{"<primary>", 1, 1},
+	}
 	language["<comma_separated_value>"] = []expression{
-		{"<value>,<comma_separated_value>", 10, 2},
+		{"<value>,<comma_separated_value>", 10, 1},
 		{"<value>", 1, 1},
 	}
 	language["<var_decl_list>"] = []expression{{"<variable_id_as>", 0.5, 2}, {"<variable_id_as>, <var_decl_list>", 0.5, 3}}

@@ -25,9 +25,11 @@ int main() {
     signed short ss = 0;
     signed char sc = 'a';
     char str[] = "Hello, World!";
-    int skrt[] = 1;
-    int p = skrt;
-    
+    const int skrt[10] = {1,2,3,4, 5.2f, 'c'};
+    int p = skrt[100];
+
+
+
 
     if (pa == a) {
         a = 1;

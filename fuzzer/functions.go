@@ -61,7 +61,7 @@ func (fs *Functions) declare_function_grammar() string {
 
 func (fs *Functions) call_function_grammar() string {
 	if len(fs.functions) == 0 {
-		panic("No functions available")
+		return "$INT$"
 	}
 
 	f := fs.functions[rand.Intn(len(fs.functions))]

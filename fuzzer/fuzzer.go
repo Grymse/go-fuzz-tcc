@@ -207,7 +207,7 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 	return false
 }
 
-var lorem = "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+var lorem = "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
 
 func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 	for {
@@ -223,12 +223,22 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 		}
 
 		if strings.Contains(output, "$ID_DECL$") {
-			output = strings.Replace(output, "$ID_DECL$", fuzzer.Variables.add_variable(VAR), 1)
+			output = strings.Replace(output, "$ID_DECL$", fuzzer.Variables.add_variable(VAR, false), 1)
 			continue
 		}
 
 		if strings.Contains(output, "$ID_DECL_C$") {
-			output = strings.Replace(output, "$ID_DECL_C$", fuzzer.Variables.add_variable(CONST), 1)
+			output = strings.Replace(output, "$ID_DECL_C$", fuzzer.Variables.add_variable(CONST, false), 1)
+			continue
+		}
+
+		if strings.Contains(output, "$ID_DECL_ARR_C$") {
+			output = strings.Replace(output, "$ID_DECL_ARR_C$", fuzzer.Variables.add_variable(CONST, true), 1)
+			continue
+		}
+
+		if strings.Contains(output, "$ID_DECL_ARR$") {
+			output = strings.Replace(output, "$ID_DECL_ARR$", fuzzer.Variables.add_variable(VAR, true), 1)
 			continue
 		}
 
