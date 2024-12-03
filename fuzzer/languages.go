@@ -60,7 +60,8 @@ func cln() languageRules {
 	}
 	language["<arr_decl>"] = []expression{
 		{"const <number_types> $ID_DECL_ARR_C$<arr_decl_array>", 1, 1},
-		{"<number_types> $ID_DECL_ARR$<arr_decl_array>", 1, 1}}
+		{"<number_types> $ID_DECL_ARR$<arr_decl_array>", 1, 1},
+	}
 	language["<arr_decl_array>"] = []expression{
 		{"[$INT$]", 1, 1},
 		{"[$INT$]={<comma_separated_value>}", 3, 1},

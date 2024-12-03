@@ -8,6 +8,7 @@
   - [X] Float
   - [X] Double
 - [X] Boolean
+- [X] Arrays (1D only for simplicity)
 
 **Variables:**
 - [X] Local Variables
@@ -17,11 +18,8 @@
 
 **Expressions:**
 - [X] Comparison (==, !=, <=, >=, <, >)
-- [X] Arithmetic (+, -, /, *, %)
+- [X] Arithmetic (+, -, /, *)
 - [X] Logical (&&, ||, !)
-- [ ] Bitwise (&, |, ^, ~)
-- [ ] Shifting (<<, >>)
-- [ ] Increment/Decrement (++, --)
 
 **Statements**
 - [X] if
@@ -36,21 +34,3 @@
 - [X] Function Declarations
 - [X] Function Calls
 - [X] Recursive Functions (optional for added complexity)
-
-**Memory and Pointers**
-- [-] Pointers (basic dereferencing, * and &)
-- [-] Arrays (1D only for simplicity)
-- [-] malloc and free (manual memory management)
-- [-] sizeof operator
-
-**I/O**
-- [-] Basic printf for debugging output
-- [-] File I/O (optional, e.g., reading/writing small files)
-
-
-
-
-**TODO**
-- Add shadowing variables
-- Add arrays
-- Add pointers
