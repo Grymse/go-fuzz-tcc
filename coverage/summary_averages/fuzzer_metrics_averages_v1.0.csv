@@ -1,0 +1,12 @@
+Filename,Average Lines Executed %,Average Branches Executed %,Average Calls Executed %
+tccasm.c,0,0,0
+tcc.c,53.52,79.06,26.47
+tccdbg.c,8.24,5.32,10.25
+i386-asm.c,0,0,0
+x86_64-link.c,0,0,0
+x86_64-gen.c,43.36,60.23,33.26
+libtcc.c,33.78,40.74,34.27
+tccrun.c,.81,.91,0
+tccpp.c,51.58,52.31,41.05
+tccelf.c,17.00,11.13,14.10
+tccgen.c,40.01,51.63,26.13
