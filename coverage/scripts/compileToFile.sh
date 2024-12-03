@@ -3,7 +3,10 @@
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd $script_dir/../..
+
+# measure time it takes to generate output.c
 go run main.go > output.c
+
 
 clang-format -i output.c
 

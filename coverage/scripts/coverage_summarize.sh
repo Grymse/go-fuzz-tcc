@@ -8,6 +8,7 @@ csv_dir="$script_dir/../csv_files/"
 
 # Define the base name for the output file
 output_base="$script_dir/../summary_averages/fuzzer_metrics_averages"
+output_time_summary=$output_base"_time_summary"
 
 # Function to get the next available output file name
 get_next_output_file() {
@@ -26,6 +27,7 @@ get_next_output_file() {
 
 # Get the next available output file
 output_averages=$(get_next_output_file "$output_base")
+output_time=$(get_next_output_file "$output_time_summary")
 
 # Initialize the output file with headers
 echo "Filename,Average Lines Executed %,Average Branches Executed %,Average Calls Executed %" > "$output_averages"
@@ -101,3 +103,33 @@ for filename in "${!sum_lines[@]}"; do
 done
 
 echo "Averages saved to $output_averages"
+
+# Process time_log.csv
+time_log_file="$csv_dir/time_log.csv"
+if [[ -f "$time_log_file" ]]; then
+    echo "Processing $time_log_file..."
+    total_time=0
+    count=0
+
+    # Skip the header row and sum up the time values
+    while IFS= read -r time_value; do
+        # Skip the header row
+        if [[ "$time_value" != "Time (ms)" && -n "$time_value" ]]; then
+            if [[ "$time_value" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+                total_time=$(echo "$total_time + $time_value" | bc)
+                count=$((count + 1))
+            fi
+        fi
+    done < "$time_log_file"
+
+    if [[ $count -gt 0 ]]; then
+        average_time=$(echo "scale=2; $total_time / $count" | bc)
+        echo "File,Average Time (ms)" > "$output_time"
+        echo "time_log,$average_time" >> "$output_time"
+        echo "Time summary saved to $output_time"
+    else
+        echo "No valid time values found in $time_log_file."
+    fi
+else
+    echo "File $time_log_file not found."
+fi

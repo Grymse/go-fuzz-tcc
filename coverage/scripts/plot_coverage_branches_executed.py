@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 summary_dir = "../summary_averages/"
-output_plot = "../graphs/summary_lines_executed_plot.png"
+output_plot = "../graphs/summary_branches_executed_plot.png"
 
 csv_files = [f for f in os.listdir(summary_dir) if f.startswith("fuzzer_metrics_averages") and f.endswith(".csv")]
 
@@ -26,30 +26,31 @@ if not df_list:
     raise ValueError("No valid data found in the CSV files.")
 all_data = pd.concat(df_list, ignore_index=True)
 
-if 'Average Lines Executed %' not in all_data.columns:
-    raise ValueError("'Average Lines Executed %' column not found in the data.")
+if 'Average Branches Executed %' not in all_data.columns:
+    raise ValueError("'Average Branches Executed %' column not found in the data.")
 
-lines_data = all_data[['Filename', 'File', 'Average Lines Executed %']].copy()
+lines_data = all_data[['Filename', 'File', 'Average Branches Executed %']].copy()
 
 
-value_ranges = lines_data.groupby('Filename')['Average Lines Executed %'].agg(['min', 'max'])
+value_ranges = lines_data.groupby('Filename')['Average Branches Executed %'].agg(['min', 'max'])
 value_ranges['range'] = value_ranges['max'] - value_ranges['min']
 
 changing_files = value_ranges[value_ranges['range'] > 0].index
 lines_data_filtered = lines_data[lines_data['Filename'].isin(changing_files)].copy()
 
 if lines_data_filtered.empty:
-    raise ValueError("No changes detected in 'Average Lines Executed %' across files.")
+    raise ValueError("No changes detected in 'Average Branches Executed %' across files.")
 
 lines_data_filtered.sort_values(by='File', inplace=True)
 
 plt.figure(figsize=(16, 8))
 sns.set(style="whitegrid")
 
+
 barplot = sns.barplot(
     data=lines_data_filtered,
     x='File',
-    y='Average Lines Executed %',
+    y='Average Branches Executed %',
     hue='Filename',
     dodge=True
 )
@@ -62,9 +63,9 @@ for container in barplot.containers:
         padding=3
     )
 
-plt.title("Changes in Lines Executed Across Summary Files (Filtered for Changes)")
+plt.title("Changes in Average Branches Executed % Across Summary Files (Filtered for Changes)")
 plt.xlabel("Summary File")
-plt.ylabel("Average Lines Executed (%)")
+plt.ylabel("Average Branches Executed % (%)")
 plt.xticks(rotation=45, ha='right')
 plt.legend(title='Filename', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
