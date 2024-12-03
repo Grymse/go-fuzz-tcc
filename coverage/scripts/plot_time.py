@@ -1,57 +1,66 @@
-import os
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Directory containing the time summary files
-summary_dir = "../summary_averages/"
-output_plot = "../graphs/average_time_bar_plot.png"
+# Base directory where Test folders are located
+summary_base_dir = "../csv_files/"
+output_plot = "../graphs/average_time_comparison.png"
 
-# Find all "fuzzer_metrics_averages_time_summary_x" files
-time_summary_files = sorted([
-    f for f in os.listdir(summary_dir) 
-    if f.startswith("fuzzer_metrics_averages_time_summary_") and f.endswith(".csv")
-])
+# Collect all "*_time_log.csv" files in "csv_files/Test x" folders
+csv_files = []
+for root, dirs, files in os.walk(summary_base_dir):
+    for file in files:
+        if file.endswith("_time_log.csv"):
+            csv_files.append(os.path.join(root, file))
 
-if not time_summary_files:
-    raise FileNotFoundError(f"No matching files found in {summary_dir}")
+if not csv_files:
+    raise FileNotFoundError(f"No matching CSV files found in {summary_base_dir}")
 
-# Read and combine all time summary files into a single DataFrame
 df_list = []
-for file in time_summary_files:
-    file_path = os.path.join(summary_dir, file)
+
+for file_path in csv_files:
     try:
-        df = pd.read_csv(file_path)
-        df['Source'] = file  # Add a column to identify the source file
+        # Extract the Test folder name (e.g., "Test 1") from the file name
+        test_folder = os.path.basename(file_path).split("_")[0] + " " + os.path.basename(file_path).split("_")[1]
+        
+        # Read CSV and assume it has only 'Average Time' column
+        df = pd.read_csv(file_path, header=None, names=['Average Time'])
+        
+        # Add a column for the test folder name (from file name)
+        df['Test Folder'] = test_folder
+        df['Filename'] = os.path.basename(file_path)  # Add Filename column
+
         df_list.append(df)
     except Exception as e:
-        print(f"Error reading {file_path}: {e}")
+        print(f"Error reading file {file_path}: {e}")
 
 if not df_list:
-    raise ValueError("No valid data found in the time summary files.")
+    raise ValueError("No valid data found in the CSV files.")
 
+# Combine all data into a single DataFrame
 all_data = pd.concat(df_list, ignore_index=True)
 
-# Ensure the necessary columns exist
-if 'Average Time (ms)' not in all_data.columns or 'Source' not in all_data.columns:
-    raise ValueError("'Average Time (ms)' or 'Source' column missing from data.")
+# Check if the required column exists
+if 'Average Time' not in all_data.columns:
+    raise ValueError("'Average Time' column not found in the data.")
 
-# Sort the data by the 'Source' column based on the file names' natural order
-all_data['Source'] = pd.Categorical(all_data['Source'], categories=time_summary_files, ordered=True)
-all_data.sort_values(by='Source', inplace=True)
+# Sort data for better visualization
+all_data.sort_values(by='Test Folder', inplace=True)
 
-# Plot the data with adjusted figure height
-plt.figure(figsize=(12, 8))  # Increased height from 6 to 8
+# Create the plot
+plt.figure(figsize=(16, 8))
 sns.set(style="whitegrid")
 
 barplot = sns.barplot(
     data=all_data,
-    x='Source',
-    y='Average Time (ms)',
-    color="skyblue"
+    x='Test Folder',
+    y='Average Time',
+    hue='Filename',
+    dodge=True
 )
 
-# Annotate the bars with their values
+# Add bar labels
 for container in barplot.containers:
     barplot.bar_label(
         container,
@@ -60,12 +69,16 @@ for container in barplot.containers:
         padding=3
     )
 
-plt.title("Average Time (ms) Across Fuzzer Metrics Summaries")
-plt.xlabel("Summary File")
-plt.ylabel("Average Time (ms)")
+# Customize plot
+plt.title("Average Time Comparison Across Test Folders")
+plt.xlabel("Test Folder")
+plt.ylabel("Average Time")
 plt.xticks(rotation=45, ha='right')
+plt.legend(title='Filename', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 
 # Save the plot
-os.makedirs("../graphs", exist_ok=True)
+os.makedirs(os.path.dirname(output_plot), exist_ok=True)  # Ensure the output directory exists
 plt.savefig(output_plot, dpi=300, bbox_inches='tight')
+
+print(f"Plot saved to {output_plot}")
