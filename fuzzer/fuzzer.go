@@ -87,18 +87,38 @@ func (fuzzer *Fuzzer) adjustScope(output string) {
 }
 
 var depth = 0
-var maxDepth = 200
+var wavePeak = 40
+var waveValleyMin = 4
+var waveValleyMax = 10
+var waveValley = 4
+var maxWaves = 100
+var waveCount = 0
+var target = wavePeak
+
+// Amount of waves
+// Wave peak
+// Wave valley
+
+func adjustPeak() {
+	if depth < waveValley {
+		target = wavePeak
+	} else if depth > wavePeak {
+		target = rand.Intn(waveValleyMax-waveValleyMin) + waveValleyMin
+		waveCount++
+	}
+
+	if waveCount >= maxWaves {
+		target = 0
+	}
+}
 
 func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 	// Choose a rule at random
 	var output string
 
 	depth++
-	// fmt.Println(depth * 2)
-	if maxDepth < depth {
-		// If we reach max depth, probability decrease maxdepth with 1
-		// maxDepth = maxDepth - rand.Intn(10)/10
-		maxDepth = maxDepth - 1
+	adjustPeak()
+	if target < depth {
 		output = selectCheapestExpression(expressions).output
 	} else {
 		output = getRuleProbabilistic(expressions).output
@@ -163,9 +183,15 @@ func (fuzzer *Fuzzer) appendExpressions(expressions []expression) {
 }
 
 func selectCheapestExpression(expressions []expression) expression {
+	// shuffle expressions
+	shuffled := make([]expression, len(expressions))
+	perm := rand.Perm(len(expressions))
+	for i, v := range perm {
+		shuffled[v] = expressions[i]
+	}
 
-	cheapest := expressions[0]
-	for _, expression := range expressions {
+	cheapest := shuffled[0]
+	for _, expression := range shuffled {
 		if expression.cost < cheapest.cost {
 			cheapest = expression
 		}
@@ -208,6 +234,7 @@ func (fuzzer *Fuzzer) processNonTerminalRule(nonTerminalRule string) bool {
 }
 
 var lorem = "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+var currChar = 0
 
 func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 	for {
@@ -256,9 +283,17 @@ func (fuzzer *Fuzzer) replaceSpecialTerminals(output string) string {
 		output = strings.Replace(output, "$INT$", strconv.Itoa(rand.Intn(10000)), 1)
 		output = strings.Replace(output, "$ID$", fuzzer.Variables.get_variable(ANY), 1)
 		output = strings.Replace(output, "$ID_AS$", fuzzer.Variables.get_variable(VAR), 1)
+		output = strings.Replace(output, "$FUNC$", fuzzer.Functions.call_function_grammar(), 1)
 
-		chars := "abcdefghijklmnopqrstuvwxyz"
-		output = strings.Replace(output, "$CHAR$", "'"+string(chars[rand.Intn(len(chars))])+"'", 1)
+		if strings.Contains(output, "$CHAR$") {
+			chars := "abcdefghijklmnopqrstuvwxyz"
+			currChar++
+			if currChar >= len(chars) {
+				currChar = 0
+			}
+			output = strings.Replace(output, "$CHAR$", "'"+string(chars[currChar])+"'", 1)
+			continue
+		}
 	}
 
 	return output

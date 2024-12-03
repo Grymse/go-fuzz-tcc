@@ -38,6 +38,9 @@ func cln() languageRules {
 		{"<global_decl!>\n int main() {<variable_decl_as>; <statement*>; return 1;}", 1, 13}}
 	language["<global_decl>"] = []expression{
 		{"<variable_decl_as!>", 1, 1},
+		{"<func_decl*>", 1, 1},
+	}
+	language["<func_decl>"] = []expression{
 		{"^$FUNC_DECL$ <compound_statement>", 1, 1},
 	}
 	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 0.8, 12}, {"{}", 0.2, 1}}
@@ -94,7 +97,7 @@ func cln() languageRules {
 		{"<cond_statement>", 1, 13},
 		{"<while_statement>", 1, 13},
 		{"<multiline_comment>;", 1, 12},
-		{"// $LOREM$ \n", 1, 1},
+		{"// $LOREM$ \n <statement>", 1, 2},
 		{"$FUNC$;", 1, 2},
 		{"return $ID$;", 1, 1},
 	}
@@ -107,8 +110,10 @@ func cln() languageRules {
 		{"switch (<expr>) {<case_statement*> \n default:\n <statement>}", 1, 12},
 	}
 	language["<case_statement>"] = []expression{
-		{"\ncase <value>:\n <statement> \nbreak;", 1, 12},
-		{"\ncase <value>:\n <statement>", 1, 12},
+		{"\ncase $INT$:\n <statement> \nbreak;", 1, 12},
+		{"\ncase $CHAR$:\n <statement> \nbreak;", 1, 12},
+		{"\ncase $INT$:\n <statement>", 1, 12},
+		{"\ncase $CHAR$:\n <statement>", 1, 12},
 	}
 	language["<do_while_statement>"] = []expression{
 		{"do <loop_statement> while (<expr>);", 1, 12},
@@ -117,7 +122,7 @@ func cln() languageRules {
 		{"while (<expr>) <loop_statement>", 1, 12},
 	}
 	language["<for_statement>"] = []expression{
-		{"^for (int $ID_DECL$ = 0; <condition>; $ID$ = <expr>) <loop_statement>", 0.5, 12},
+		{"^for (int $ID_DECL$ = 0; <condition>; $ID_AS$ = <expr>) <loop_statement>", 0.5, 12},
 		{"for (; <condition>; ) <loop_statement>", 0.5, 12},
 	}
 	language["<loop_statement>"] = []expression{
