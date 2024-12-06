@@ -23,10 +23,11 @@ extract_variables() {
         # Get a timestamp for this test
         local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
         
+        echo "" >> "$results_file"  # Add a blank line for separation
         echo "Test: $test_dir_name ($timestamp)" >> "$results_file"
         
         # List of variables to extract
-        local variables=("depth" "wavePeak" "waveValleyMin" "waveValleyMax" "waveValley" "maxWaves" "waveCount" "target")
+        local variables=("wavePeak" "waveValleyMin" "waveValleyMax" "maxWaves")
         for var in "${variables[@]}"; do
             # Use grep and awk to extract the variable value
             local value=$(grep -E "var $var =" "$fuzzer_file" | awk -F '=' '{gsub(/ /, "", $2); print $2}')
@@ -41,12 +42,17 @@ extract_variables() {
     fi
 }
 
-# Create a new directory for this test run, e.g., Test 1, Test 2, etc.
-test_dir_name="Test_1"
+# Create a new directory for this test run, e.g., Test_01, Test_02, ..., Test_99
+test_dir_name="Test_01"
 suffix=1
 while [[ -d "$base_dir/$test_dir_name" ]]; do
     suffix=$((suffix + 1))
-    test_dir_name="Test_$suffix"
+    # Format the suffix with leading zeros for numbers 1-9
+    if [[ $suffix -le 9 ]]; then
+        test_dir_name="Test_0$suffix"
+    else
+        test_dir_name="Test_$suffix"
+    fi
 done
 
 # Create the new test directory

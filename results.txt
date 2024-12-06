@@ -1,10 +1,35 @@
-Test: Test_1 (2024-12-06 10:46:09)
-depth = 0
+
+Test: Test_01 (2024-12-06 13:36:06)
+wavePeak = 10
+waveValleyMin = 4
+waveValleyMax = 5
+maxWaves = 20
+
+
+Test: Test_02 (2024-12-06 13:38:04)
+wavePeak = 50
+waveValleyMin = 4
+waveValleyMax = 5
+maxWaves = 20
+
+
+Test: Test_03 (2024-12-06 13:39:35)
+wavePeak = 100
+waveValleyMin = 4
+waveValleyMax = 5
+maxWaves = 20
+
+
+Test: Test_04 (2024-12-06 13:40:32)
+wavePeak = 150
+waveValleyMin = 4
+waveValleyMax = 5
+maxWaves = 20
+
+
+Test: Test_05 (2024-12-06 13:41:39)
 wavePeak = 200
 waveValleyMin = 4
 waveValleyMax = 5
-waveValley = 4
 maxWaves = 20
-waveCount = 0
-target = wavePeak
 

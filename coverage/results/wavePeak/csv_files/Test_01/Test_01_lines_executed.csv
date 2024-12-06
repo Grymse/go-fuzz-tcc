@@ -1,0 +1,12 @@
+Filename,Lines Executed %
+i386-asm.c,0.00
+libtcc.c,34.48
+tccasm.c,0.00
+tcc.c,47.48
+tccdbg.c,8.29
+tccelf.c,18.08
+tccgen.c,40.42
+tccpp.c,50.88
+tccrun.c,0.81
+x86_64-gen.c,44.87
+x86_64-link.c,0.00

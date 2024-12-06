@@ -1,0 +1,143 @@
+OLD we changed code
+Time:
+
+We have tried to add 50 to wavePeak between each iteration
+We can see the average time to compile goes up between each iteration,
+however it is still pretty low (its in ms). However, it seems
+that it takes a long time for clang to format it, and for gcc to compile
+it. Up to multiple minutes at its peak.
+
+Lines Executed:
+
+- libtcc.c : no big difference between iterations
+- tcc.c    : no big difference between iterations
+- tccelf.c : no big difference between iterations
+
+
+Test: Test_1 (2024-12-06 10:53:16)
+depth = 0
+wavePeak = 10
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+Test: Test_2 (2024-12-06 10:55:26)
+depth = 0
+wavePeak = 50
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+Test: Test_3 (2024-12-06 10:56:31)
+depth = 0
+wavePeak = 100
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+Test: Test_4 (2024-12-06 10:59:08)
+depth = 0
+wavePeak = 150
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_5 (2024-12-06 11:03:24)
+depth = 0
+wavePeak = 200
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_6 (2024-12-06 11:09:56)
+depth = 0
+wavePeak = 250
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_7 (2024-12-06 11:10:54)
+depth = 0
+wavePeak = 300
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_8 (2024-12-06 11:12:22)
+depth = 0
+wavePeak = 350
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_9 (2024-12-06 11:14:05)
+depth = 0
+wavePeak = 400
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_10 (2024-12-06 11:17:46)
+depth = 0
+wavePeak = 450
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_11 (2024-12-06 11:27:31)
+depth = 0
+wavePeak = 500
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak
+
+
+Test: Test_12 (2024-12-06 11:47:30)
+depth = 0
+wavePeak = 550
+waveValleyMin = 4
+waveValleyMax = 5
+waveValley = 4
+maxWaves = 20
+waveCount = 0
+target = wavePeak

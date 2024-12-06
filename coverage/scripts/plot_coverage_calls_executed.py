@@ -7,6 +7,8 @@ import seaborn as sns
 summary_base_dir = "../csv_files/"
 output_plot = "../graphs/calls_executed.png"
 
+excluded_files = {'libtcc.c', 'tcc.c', 'tccelf.c'}
+
 # Collect all "*_calls_executed.csv" files in "csv_files/Test x" folders
 csv_files = []
 for root, dirs, files in os.walk(summary_base_dir):
@@ -41,6 +43,8 @@ if 'Calls Executed %' not in all_data.columns:
 
 # Filter relevant data
 lines_data = all_data[['Filename', 'Test Folder', 'Calls Executed %']].copy()
+
+lines_data = lines_data[~lines_data['Filename'].isin(excluded_files)]
 
 # Calculate min and max values to find ranges
 value_ranges = lines_data.groupby('Filename')['Calls Executed %'].agg(['min', 'max'])
