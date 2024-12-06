@@ -1,0 +1,1 @@
+int main ( ) { short   i ;  /* "%f" */  ;  return eZ ;  return 1; } 

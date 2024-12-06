@@ -1,0 +1,1 @@
+int main ( ) { char  z ;  {}   return 1; } 

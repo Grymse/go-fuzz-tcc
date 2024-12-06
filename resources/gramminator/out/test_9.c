@@ -1,0 +1,1 @@
+const char B36 [] = "L"  ;   int main ( ) { const char  Y = 'L'  ;  return Wyd ;  return 1; } 
