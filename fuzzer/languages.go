@@ -176,7 +176,6 @@ func cln() languageRules {
 		{"<factor>", 1, 3},
 		{"<term> * <factor>", 1, 4},
 		{"<term> / <factor>", 1, 4},
-		/* {"<term> % <factor>", 1, 4}, */
 	}
 	language["<factor>"] = []expression{
 		{"! <factor>", 0.34, 3},
