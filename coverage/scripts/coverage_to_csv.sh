@@ -5,21 +5,40 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$script_dir/../csv_files"  # Base directory for output files
 mkdir -p "$base_dir"  # Ensure the base directory exists
 
+results_file="$script_dir/../../results.txt"  # Results file in root directory
+
+# Ensure results.txt exists
+if [[ ! -f "$results_file" ]]; then
+    touch "$results_file"
+fi
+
 echo "Current directory: $(pwd)"
 
-# Function to get the next available output file name
-get_next_output_file() {
-    local base_name="$1"
-    local suffix=1
-    local output_file="${base_name}_${suffix}.csv"
-    
-    # Loop to find the next available file name
-    while [[ -f "$output_file" ]]; do
-        suffix=$((suffix + 1))
-        output_file="${base_name}_${suffix}.csv"
-    done
-    
-    echo "$output_file"
+# Function to extract variable values from fuzzer.go
+extract_variables() {
+    local fuzzer_file="$script_dir/../../fuzzer/fuzzer.go"
+    if [[ -f "$fuzzer_file" ]]; then
+        echo "Extracting variable values from fuzzer.go..."
+        
+        # Get a timestamp for this test
+        local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+        
+        echo "Test: $test_dir_name ($timestamp)" >> "$results_file"
+        
+        # List of variables to extract
+        local variables=("depth" "wavePeak" "waveValleyMin" "waveValleyMax" "waveValley" "maxWaves" "waveCount" "target")
+        for var in "${variables[@]}"; do
+            # Use grep and awk to extract the variable value
+            local value=$(grep -E "var $var =" "$fuzzer_file" | awk -F '=' '{gsub(/ /, "", $2); print $2}')
+            if [[ -z "$value" ]]; then
+                value="N/A"  # Fallback if the variable is not found
+            fi
+            echo "$var = $value" >> "$results_file"
+        done
+        echo "" >> "$results_file"  # Add a blank line for separation
+    else
+        echo "fuzzer.go not found at $fuzzer_file" >> "$results_file"
+    fi
 }
 
 # Create a new directory for this test run, e.g., Test 1, Test 2, etc.
@@ -33,6 +52,9 @@ done
 # Create the new test directory
 test_dir="$base_dir/$test_dir_name"
 mkdir -p "$test_dir"  # Ensure the test directory exists
+
+# Extract variables and append to results.txt
+extract_variables
 
 # Output files for each metric
 output_lines_executed="${test_dir}/${test_dir_name}_lines_executed.csv"

@@ -27,3 +27,6 @@ go.work.sum
 output
 output.c
 output.o
+
+coverage/csv_files/*
+coverage/code_files/*
