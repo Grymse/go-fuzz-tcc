@@ -3,58 +3,72 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-summary_dir = "../summary_averages/"
-output_plot = "../graphs/summary_calls_executed_plot.png"
+# Base directory where Test folders are located
+summary_base_dir = "../csv_files/"
+output_plot = "../graphs/calls_executed.png"
 
-csv_files = [f for f in os.listdir(summary_dir) if f.startswith("fuzzer_metrics_averages") and f.endswith(".csv")]
+# Collect all "*_calls_executed.csv" files in "csv_files/Test x" folders
+csv_files = []
+for root, dirs, files in os.walk(summary_base_dir):
+    for file in files:
+        if file.endswith("_calls_executed.csv"):
+            csv_files.append(os.path.join(root, file))
 
 if not csv_files:
-    raise FileNotFoundError(f"No matching CSV files found in {summary_dir}")
+    raise FileNotFoundError(f"No matching CSV files found in {summary_base_dir}")
 
 df_list = []
 
-for file in csv_files:
-    file_path = os.path.join(summary_dir, file)
+for file_path in csv_files:
     try:
+        # Extract the Test folder name (e.g., "Test 1") from the file name
+        test_folder = os.path.basename(file_path).split("_")[0] + " " + os.path.basename(file_path).split("_")[1]
         df = pd.read_csv(file_path)
-        df['File'] = file  # Add a column for the file name (to identify which file it came from)
+        df['Test Folder'] = test_folder  # Add a column for the test folder name
         df_list.append(df)
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
 
 if not df_list:
     raise ValueError("No valid data found in the CSV files.")
+
+# Combine all data into a single DataFrame
 all_data = pd.concat(df_list, ignore_index=True)
 
-if 'Average Calls Executed %' not in all_data.columns:
-    raise ValueError("'Average Calls Executed %' column not found in the data.")
+# Check if the required column exists
+if 'Calls Executed %' not in all_data.columns:
+    raise ValueError("'Calls Executed %' column not found in the data.")
 
-lines_data = all_data[['Filename', 'File', 'Average Calls Executed %']].copy()
+# Filter relevant data
+lines_data = all_data[['Filename', 'Test Folder', 'Calls Executed %']].copy()
 
-
-value_ranges = lines_data.groupby('Filename')['Average Calls Executed %'].agg(['min', 'max'])
+# Calculate min and max values to find ranges
+value_ranges = lines_data.groupby('Filename')['Calls Executed %'].agg(['min', 'max'])
 value_ranges['range'] = value_ranges['max'] - value_ranges['min']
 
+# Filter files with changes in 'Calls Executed %'
 changing_files = value_ranges[value_ranges['range'] > 0].index
 lines_data_filtered = lines_data[lines_data['Filename'].isin(changing_files)].copy()
 
 if lines_data_filtered.empty:
-    raise ValueError("No changes detected in 'Average Calls Executed %' across files.")
+    raise ValueError("No changes detected in 'Calls Executed %' across files.")
 
-lines_data_filtered.sort_values(by='File', inplace=True)
+# Sort data for better visualization
+lines_data_filtered.sort_values(by='Test Folder', inplace=True)
 
+# Create the plot
 plt.figure(figsize=(16, 8))
 sns.set(style="whitegrid")
 
-
 barplot = sns.barplot(
     data=lines_data_filtered,
-    x='File',
-    y='Average Calls Executed %',
+    x='Test Folder',
+    y='Calls Executed %',
     hue='Filename',
     dodge=True
 )
 
+# Add bar labels
 for container in barplot.containers:
     barplot.bar_label(
         container,
@@ -63,11 +77,16 @@ for container in barplot.containers:
         padding=3
     )
 
-plt.title("Changes in Average Calls Executed Across Summary Files (Filtered for Changes)")
-plt.xlabel("Summary File")
-plt.ylabel("Average Calls Executed (%)")
+# Customize plot
+plt.title("Changes in Calls Executed % Across Test Folders (Filtered for Changes)")
+plt.xlabel("Test Folder")
+plt.ylabel("Calls Executed % (%)")
 plt.xticks(rotation=45, ha='right')
 plt.legend(title='Filename', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 
+# Save the plot
+os.makedirs(os.path.dirname(output_plot), exist_ok=True)  # Ensure the output directory exists
 plt.savefig(output_plot, dpi=300, bbox_inches='tight')
+
+print(f"Plot saved to {output_plot}")

@@ -87,17 +87,14 @@ func (fuzzer *Fuzzer) adjustScope(output string) {
 }
 
 var depth = 0
-var wavePeak = 40
+var wavePeak = 200
 var waveValleyMin = 4
-var waveValleyMax = 10
+var waveValleyMax = 5
 var waveValley = 4
-var maxWaves = 100
+var maxWaves = 20
 var waveCount = 0
 var target = wavePeak
 
-// Amount of waves
-// Wave peak
-// Wave valley
 
 func adjustPeak() {
 	if depth < waveValley {
