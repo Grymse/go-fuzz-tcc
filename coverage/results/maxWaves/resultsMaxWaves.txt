@@ -1,0 +1,112 @@
+
+Test: Test_01 (2024-12-10 10:10:27)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 1
+
+
+Test: Test_02 (2024-12-10 10:10:46)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 2
+
+
+Test: Test_03 (2024-12-10 10:18:34)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 5
+
+
+Test: Test_04 (2024-12-10 10:20:15)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 10
+
+
+Test: Test_05 (2024-12-10 10:20:27)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 20
+
+
+Test: Test_06 (2024-12-10 10:20:39)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 50
+
+
+Test: Test_01 (2024-12-10 10:21:11)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 1
+
+
+Test: Test_02 (2024-12-10 10:21:22)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 2
+
+
+Test: Test_03 (2024-12-10 10:22:49)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 3
+
+
+Test: Test_04 (2024-12-10 10:23:02)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 5
+
+
+Test: Test_05 (2024-12-10 10:23:19)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 10
+
+
+Test: Test_06 (2024-12-10 10:23:43)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 20
+
+
+Test: Test_07 (2024-12-10 10:24:11)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 50
+
+
+Test: Test_08 (2024-12-10 10:24:47)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 100
+
+
+Test: Test_09 (2024-12-10 10:25:13)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 200
+
+
+Test: Test_10 (2024-12-10 10:25:26)
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 3
+maxWaves = 500
+

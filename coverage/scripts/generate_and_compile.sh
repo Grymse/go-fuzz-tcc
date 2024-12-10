@@ -15,12 +15,12 @@ do
     
     bash $script_dir/writeTimeToFile.sh $generation_time_ms
 
-    clang-format -i $script_dir/../code_files/code$i.c
-    if gcc $script_dir/../code_files/code$i.c -o $script_dir/../code_files/output/code$i; then
-        echo "Compilation successful!"
-    else 
-        echo "Compilation failed!"
-    fi
+    # clang-format -i $script_dir/../code_files/code$i.c
+    # if gcc $script_dir/../code_files/code$i.c -o $script_dir/../code_files/output/code$i; then
+    #     echo "Compilation successful!"
+    # else 
+    #     echo "Compilation failed!"
+    # fi
 
     # Specify the output directory for the object file when using tcc
     ../tinycc/tcc -c $script_dir/../code_files/code$i.c -o $script_dir/../code_files/output/code$i.o

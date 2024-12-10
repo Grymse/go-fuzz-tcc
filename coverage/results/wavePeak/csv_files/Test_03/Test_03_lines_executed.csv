@@ -5,8 +5,8 @@ tccasm.c,0.00
 tcc.c,47.48
 tccdbg.c,8.29
 tccelf.c,18.12
-tccgen.c,44.84
-tccpp.c,51.66
+tccgen.c,49.63
+tccpp.c,52.57
 tccrun.c,0.81
-x86_64-gen.c,55.39
+x86_64-gen.c,56.43
 x86_64-link.c,0.00

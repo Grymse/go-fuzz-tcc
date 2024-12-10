@@ -87,9 +87,9 @@ func (fuzzer *Fuzzer) adjustScope(output string) {
 }
 
 // Heuristic variables:
-var wavePeak = 200
-var waveValleyMin = 4
-var waveValleyMax = 5
+var wavePeak = 150
+var waveValleyMin = 1
+var waveValleyMax = 3
 var maxWaves = 20
 
 var depth = 0

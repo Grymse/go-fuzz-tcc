@@ -1,0 +1,12 @@
+Filename,Branches Executed %
+i386-asm.c,0.00
+libtcc.c,42.91
+tccasm.c,0.00
+tcc.c,71.88
+tccdbg.c,5.38
+tccelf.c,12.03
+tccgen.c,59.35
+tccpp.c,53.32
+tccrun.c,0.91
+x86_64-gen.c,70.41
+x86_64-link.c,0.00
