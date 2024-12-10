@@ -1,196 +1,36 @@
-
-Test: Test_01 (2024-12-10 10:10:27)
 wavePeak = 150
 waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 1
-
-
-Test: Test_02 (2024-12-10 10:10:46)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 2
-
-
-Test: Test_03 (2024-12-10 10:18:34)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 5
-
-
-Test: Test_04 (2024-12-10 10:20:15)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 10
-
-
-Test: Test_05 (2024-12-10 10:20:27)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
+waveValleyMax = 6
 maxWaves = 20
 
+Test: Test_01 (2024-12-10 11:20:02)
 
-Test: Test_06 (2024-12-10 10:20:39)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 50
+    Probability: Even probability to pick any term.
 
+Test: Test_02 (2024-12-10 11:31:59)
 
-Test: Test_01 (2024-12-10 10:21:11)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 1
+    Probability: Add 1 to all terms with higher cost
+
+Test: Test_03 (2024-12-10 11:34:44)
+
+    Probability: Add 10 to all terms with higher cost
 
 
-Test: Test_02 (2024-12-10 10:21:22)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 2
+Test: Test_04 (2024-12-10 11:37:11)
 
+    Probability: Add 100 to all terms with higher cost
 
-Test: Test_03 (2024-12-10 10:22:49)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 3
+Test: Test_05 (2024-12-10 11:39:45)
 
-
-Test: Test_04 (2024-12-10 10:23:02)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 5
-
-
-Test: Test_05 (2024-12-10 10:23:19)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 10
-
-
-Test: Test_06 (2024-12-10 10:23:43)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 20
-
-
-Test: Test_07 (2024-12-10 10:24:11)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 50
-
-
-Test: Test_08 (2024-12-10 10:24:47)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 100
-
-
-Test: Test_09 (2024-12-10 10:25:13)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 200
-
-
-Test: Test_10 (2024-12-10 10:25:26)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 500
-
-
-Test: Test_11 (2024-12-10 10:40:58)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 5
-
-
-Test: Test_11 (2024-12-10 10:42:22)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 5
-
-
-Test: Test_12 (2024-12-10 10:42:37)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 5
-
-
-Test: Test_13 (2024-12-10 10:42:52)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 5
-
-
-Test: Test_14 (2024-12-10 10:43:05)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 5
-
-
-Test: Test_11 (2024-12-10 10:45:48)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 20
-
-
-Test: Test_12 (2024-12-10 10:46:03)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 20
-
-
-Test: Test_13 (2024-12-10 10:46:39)
-wavePeak = 150
-waveValleyMin = 4
-waveValleyMax = 5
-maxWaves = 20
-
-
-Test: Test_14 (2024-12-10 10:46:59)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 20
-
-
-Test: Test_15 (2024-12-10 10:48:54)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 20
-
-
-Test: Test_16 (2024-12-10 10:49:46)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 20
-
-
-Test: Test_17 (2024-12-10 10:50:00)
-wavePeak = 150
-waveValleyMin = 1
-waveValleyMax = 3
-maxWaves = 20
-
+    Probability: Slightly higher on all terms with higher costs, 
+    	language["<statement>"] = []expression
+		{"<switch_statement>", 3, 13},
+		{"<do_while_statement>", 3, 13},
+		{"<for_statement>", 3, 13},
+		{"<compound_statement>", 6, 14},
+		{"<cond_statement>", 3, 13},
+		{"<while_statement>", 3, 13},
+		{"<multiline_comment>;", 3, 12},
+		{"// $LOREM$ \n <statement>", 1, 2},
+		{"$FUNC$;", 1, 2},
+		{"return $ID$;", 1, 1},

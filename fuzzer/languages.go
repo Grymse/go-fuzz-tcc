@@ -43,10 +43,10 @@ func cln() languageRules {
 	language["<func_decl>"] = []expression{
 		{"^$FUNC_DECL$ <compound_statement>", 1, 1},
 	}
-	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 0.8, 12}, {"{}", 0.2, 1}}
+	language["<compound_statement>"] = []expression{{"{\n <var_decl*> <statement*> \n}", 9, 12}, {"{}", 1, 1}}
 	language["<var_decl>"] = []expression{{"<type_specifier> <var_decl_list> ;", 1, 3}}
 	language["<type_specifier>"] = []expression{
-		{"<number_types>", 11, 1},
+		{"<number_types>", 1, 1},
 		{"char", 1, 1}}
 	language["<number_types>"] = []expression{
 		{"int", 1, 1},
@@ -67,10 +67,10 @@ func cln() languageRules {
 	}
 	language["<arr_decl_array>"] = []expression{
 		{"[$INT$]", 1, 1},
-		{"[$INT$]={<comma_separated_value>}", 3, 1},
+		{"[$INT$]={<comma_separated_value>}", 2, 1},
 		{"[$INT$]={}", 1, 1},
 		{"[]", 1, 1},
-		{"[]={<comma_separated_value>}", 3, 1},
+		{"[]={<comma_separated_value>}", 2, 1},
 		{"[]={}", 1, 1},
 	}
 	language["<string_decl>"] = []expression{
@@ -78,11 +78,11 @@ func cln() languageRules {
 		{"char $ID_DECL_ARR$[] = \"$LOREM$\"", 1, 1},
 	}
 	language["<comma_separated_value>"] = []expression{
-		{"<value>,<comma_separated_value>", 10, 2},
+		{"<value>,<comma_separated_value>", 1, 2},
 		{"<value>", 1, 1},
 	}
-	language["<var_decl_list>"] = []expression{{"<variable_id_as>", 0.5, 2}, {"<variable_id_as>, <var_decl_list>", 0.5, 3}}
-	language["<variable_id_as>"] = []expression{{"$ID_DECL$", 0.5, 1}, {"$ID_DECL$=<expr>", 0.5, 11}}
+	language["<var_decl_list>"] = []expression{{"<variable_id_as>", 1, 2}, {"<variable_id_as>, <var_decl_list>", 1, 3}}
+	language["<variable_id_as>"] = []expression{{"$ID_DECL$", 1, 1}, {"$ID_DECL$=<expr>", 1, 11}}
 	language["<variable_decl_as>"] = []expression{
 		{"<type_specifier> $ID_DECL$=<value>;", 1, 1},
 		{"<type_specifier> $ID_DECL$;", 1, 1},
@@ -90,13 +90,13 @@ func cln() languageRules {
 		{"<string_decl>;", 1, 1},
 		{"<arr_decl>;", 1, 1}}
 	language["<statement>"] = []expression{
-		{"<switch_statement>", 1, 13},
-		{"<do_while_statement>", 1, 13},
-		{"<for_statement>", 1, 13},
-		{"<compound_statement>", 1, 14},
-		{"<cond_statement>", 1, 13},
-		{"<while_statement>", 1, 13},
-		{"<multiline_comment>;", 1, 12},
+		{"<switch_statement>", 3, 13},
+		{"<do_while_statement>", 3, 13},
+		{"<for_statement>", 3, 13},
+		{"<compound_statement>", 6, 14},
+		{"<cond_statement>", 3, 13},
+		{"<while_statement>", 3, 13},
+		{"<multiline_comment>;", 3, 12},
 		{"// $LOREM$ \n <statement>", 1, 2},
 		{"$FUNC$;", 1, 2},
 		{"return $ID$;", 1, 1},
@@ -122,13 +122,13 @@ func cln() languageRules {
 		{"while (<expr>) <loop_statement>", 1, 12},
 	}
 	language["<for_statement>"] = []expression{
-		{"^for (int $ID_DECL$ = 0; <condition>; $ID_AS$ = <expr>) <loop_statement>", 0.5, 12},
-		{"for (; <condition>; ) <loop_statement>", 0.5, 12},
+		{"^for (int $ID_DECL$ = 0; <condition>; $ID_AS$ = <expr>) <loop_statement>", 1, 12},
+		{"for (; <condition>; ) <loop_statement>", 1, 12},
 	}
 	language["<loop_statement>"] = []expression{
-		{"{\n <loop_inner_statement*> \n}", 0.6, 12},
-		{"{}", 0.15, 1},
-		{"<loop_inner_statement>", 0.25, 1},
+		{"{\n <loop_inner_statement*> \n}", 1, 12},
+		{"{}", 1, 1},
+		{"<loop_inner_statement>", 1, 1},
 	}
 	language["<loop_inner_statement>"] = []expression{
 		{"<statement>", 1, 12},
@@ -153,7 +153,7 @@ func cln() languageRules {
 	}
 	language["<conjunction>"] = []expression{
 		{"<comparison>", 1, 7},
-		{"<conjunction> && <comparison>", 1, 8},
+		{"<conjunction> && <comparison>", 2, 8},
 	}
 	language["<comparison>"] = []expression{
 		{"<relation>", 1, 6},
@@ -169,18 +169,18 @@ func cln() languageRules {
 	}
 	language["<sum>"] = []expression{
 		{"<term>", 1, 4},
-		{"<sum> + <term>", 1, 5},
-		{"<sum> - <term>", 1, 5},
+		{"<sum> + <term>", 2, 5},
+		{"<sum> - <term>", 2, 5},
 	}
 	language["<term>"] = []expression{
 		{"<factor>", 1, 3},
-		{"<term> * <factor>", 1, 4},
-		{"<term> / <factor>", 1, 4},
+		{"<term> * <factor>", 2, 4},
+		{"<term> / <factor>", 2, 4},
 	}
 	language["<factor>"] = []expression{
-		{"! <factor>", 0.34, 3},
-		{"- <factor>", 0.33, 3},
-		{"<primary>", 0.33, 2},
+		{"! <factor>", 2, 3},
+		{"- <factor>", 2, 3},
+		{"<primary>", 1, 2},
 	}
 	language["<value>"] = []expression{
 		{"$INT$", 1, 1},
