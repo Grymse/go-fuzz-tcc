@@ -1,0 +1,36 @@
+wavePeak = 150
+waveValleyMin = 1
+waveValleyMax = 6
+maxWaves = 20
+
+Test: Test_01 (2024-12-10 11:20:02)
+
+    Probability: Even probability to pick any term.
+
+Test: Test_02 (2024-12-10 11:31:59)
+
+    Probability: Add 1 to all terms with higher cost
+
+Test: Test_03 (2024-12-10 11:34:44)
+
+    Probability: Add 10 to all terms with higher cost
+
+
+Test: Test_04 (2024-12-10 11:37:11)
+
+    Probability: Add 100 to all terms with higher cost
+
+Test: Test_05 (2024-12-10 11:39:45)
+
+    Probability: Slightly higher on all terms with higher costs, 
+    	language["<statement>"] = []expression
+		{"<switch_statement>", 3, 13},
+		{"<do_while_statement>", 3, 13},
+		{"<for_statement>", 3, 13},
+		{"<compound_statement>", 6, 14},
+		{"<cond_statement>", 3, 13},
+		{"<while_statement>", 3, 13},
+		{"<multiline_comment>;", 3, 12},
+		{"// $LOREM$ \n <statement>", 1, 2},
+		{"$FUNC$;", 1, 2},
+		{"return $ID$;", 1, 1},
